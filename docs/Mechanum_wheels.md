@@ -15,6 +15,10 @@ $l$ | $0.200$ m
 $w$ | $0.169$ m
 $T$ | $5:1  $
 
+---
+
+### TSShe Long way around
+
 ## Hypothesis
 4 Mechanum wheels behave like 4 omni-directional wheels perpendicular one another, with an angular velocity of the mechanum wheel $\omega_m$ with a radius $r_m$ and an angular velocity of the omni-directional wheel $\omega_o$ with a radius $r_o$ following the formula:
 
@@ -23,6 +27,8 @@ $\omega_m r_m = \sin\left(\frac\pi{4}\right) \omega_o r_o \Rightarrow \omega_m r
 With $r_o = r_m = r$
 
 With a positive angular velocity meaning the actuator is rotating counter-clockwise.
+
+Wheels numbered from left to rigth, from front to back (front is aligned with positive $x$ axis, left side aligned with positive $y$ axis)
 
 Kinematic equations in matrix form will be:
 
@@ -95,14 +101,14 @@ V_y\\
 \end{array}\right]
 =
 \left[\begin{array}{}
-\frac14r\\
-\frac14r\\
-\frac{r}{2(l+w)}
+\frac14r & 0 & 0\\
+0 & \frac14r & 0\\
+0 & 0 & \frac{r}{2(l+w)}
 \end{array}\right]
 \left[\begin{array}{rrrr}
--1 & 1 & -1 & 1 \\
-1 & 1 & -1 & -1 \\
-1 & 1 & 1 & 1
+-1 &  1 & -1 &  1 \\
+ 1 &  1 & -1 & -1 \\
+ 1 &  1 &  1 &  1
 \end{array}\right]
 \left[\begin{array}{}
 \omega_1\\
