@@ -17,7 +17,7 @@ $T$ | $5:1  $
 
 ---
 
-### TSShe Long way around
+### The Long way around
 
 ## Hypothesis
 4 Mechanum wheels behave like 4 omni-directional wheels perpendicular one another, with an angular velocity of the mechanum wheel $\omega_m$ with a radius $r_m$ and an angular velocity of the omni-directional wheel $\omega_o$ with a radius $r_o$ following the formula:
@@ -109,6 +109,29 @@ V_y\\
 -1 &  1 & -1 &  1 \\
  1 &  1 & -1 & -1 \\
  1 &  1 &  1 &  1
+\end{array}\right]
+\left[\begin{array}{}
+\omega_1\\
+\omega_2\\
+\omega_3\\
+\omega_4
+\end{array}\right]
+$$
+
+HAHA, no, it's
+
+$$
+\left[\begin{array}{}
+V_x\\
+V_y\\
+\dot\theta
+\end{array}\right]
+=
+\frac r 4
+\left[\begin{array}{cccc}
+-1 &  1 & -1 &  1 \\
+ 1 &  1 & -1 & -1 \\
+\frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)}
 \end{array}\right]
 \left[\begin{array}{}
 \omega_1\\
