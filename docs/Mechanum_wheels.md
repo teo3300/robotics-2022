@@ -34,8 +34,8 @@ Kinematic equations in matrix form will be:
 
 $$
 \left[\begin{array}{}
-V_x\\
-V_y\\
+v_x\\
+v_y\\
 \dot\theta
 \end{array}\right]
 =
@@ -53,14 +53,14 @@ With $A \in M_{3\times4}\mathbb R$
 It will be something like:
 
 $\begin{array}{llll}
-{V_x|}_{o_1} = -\frac {\sqrt 2}{2\cdot 4} r \omega^o_1 & 
-{V_x|}_{o_2} =  \frac {\sqrt 2}{2\cdot4}r \omega^o_2 & 
-{V_x|}_{o_3} = -\frac {\sqrt 2}{2\cdot4}r \omega^o_3 &
-{V_x|}_{o_4} =  \frac {\sqrt 2}{2\cdot4}r \omega^o_4 \\
-{V_y|}_{o_1} =  \frac {\sqrt 2}{2\cdot4}r \omega^o_1 &
-{V_y|}_{o_2} =  \frac {\sqrt 2}{2\cdot4}r \omega^o_2 &
-{V_y|}_{o_3} = -\frac {\sqrt 2}{2\cdot4}r \omega^o_3 &
-{V_y|}_{o_4} = -\frac {\sqrt 2}{2\cdot4}r \omega^o_4 \\
+{v_x|}_{o_1} = -\frac {\sqrt 2}{2\cdot 4} r \omega^o_1 & 
+{v_x|}_{o_2} =  \frac {\sqrt 2}{2\cdot4}r \omega^o_2 & 
+{v_x|}_{o_3} = -\frac {\sqrt 2}{2\cdot4}r \omega^o_3 &
+{v_x|}_{o_4} =  \frac {\sqrt 2}{2\cdot4}r \omega^o_4 \\
+{v_y|}_{o_1} =  \frac {\sqrt 2}{2\cdot4}r \omega^o_1 &
+{v_y|}_{o_2} =  \frac {\sqrt 2}{2\cdot4}r \omega^o_2 &
+{v_y|}_{o_3} = -\frac {\sqrt 2}{2\cdot4}r \omega^o_3 &
+{v_y|}_{o_4} = -\frac {\sqrt 2}{2\cdot4}r \omega^o_4 \\
 {\dot\theta|}_{o_1} = \frac r {4L} \omega_{o_1}&
 {\dot\theta|}_{o_2} = \frac r {4L} \omega_{o_2} &
 {\dot\theta|}_{o_3} = \frac r {4L} \omega_{o_3} &
@@ -73,8 +73,8 @@ So the matrix system will be
 
 $$
 \left[\begin{array}{}
-V_x\\
-V_y\\
+v_x\\
+v_y\\
 \dot\theta
 \end{array}\right]
 =
@@ -95,8 +95,8 @@ Or, in a cleaner way
 
 $$
 \left[\begin{array}{}
-V_x\\
-V_y\\
+v_x\\
+v_y\\
 \dot\theta
 \end{array}\right]
 =
@@ -118,15 +118,14 @@ V_y\\
 \end{array}\right]
 $$
 
-HAHA, no, it's
+---
+
+## HAHA, no, it's
 
 $$
 \left[\begin{array}{}
-V_x\\
-V_y\\
-\dot\theta
-\end{array}\right]
-=
+v_x \\ v_y \\ \dot\theta
+\end{array}\right] =
 \frac r 4
 \left[\begin{array}{cccc}
 -1 &  1 & -1 &  1 \\
@@ -134,9 +133,119 @@ V_y\\
 \frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)}
 \end{array}\right]
 \left[\begin{array}{}
+\omega_1 \\ \omega_2 \\ \omega_3 \\ \omega_4
+\end{array}\right]
+$$
+
+## The inverse kinematics equation is
+
+$$
+\left[\begin{array}{}
 \omega_1\\
 \omega_2\\
 \omega_3\\
-\omega_4
+\omega_4\\
+\end{array}\right]
+=
+\frac 1 r
+\left[\begin{array}{rrr}
+-1 & 1  & (l+w)\\
+1  & 1  & (l+w)\\
+-1 & -1 & (l+w)\\
+1  & -1 & (l+w)
+\end{array}\right]
+\left[\begin{array}{}
+v_x\\
+v_y\\
+\dot \theta
 \end{array}\right]
 $$
+
+---
+
+## Euler integration
+Using Euler integration it's possible to obtain position in discrete time interval approximating movements.
+
+$$
+\begin{array}{l}
+x_{k+1} = x_k + T_s ({v_x}_k\cos\theta_k - {v_y}_k \sin\theta_k)\\
+y_{k+1} = y_k + T_s ({v_x}_k\sin\theta_k + {v_y}_k \cos\theta_k)\\
+\theta_{k+1} = \theta_k + T_s\omega_k\\
+T_s = t_{k+1} - t_k
+\end{array}
+$$
+
+that expand to
+
+$$
+\left[\begin{array}{}
+x_{k+1} \\ y_{k+1} \\ \theta_{k+1}
+\end{array}\right]
+=
+\left[\begin{array}{}
+x_k \\ y_k \\ \theta_k
+\end{array}\right]
++  T_s
+\left[\begin{array}{}
+\cos\theta_k & -\sin\theta_k & 0\\
+\sin\theta_k & \cos\theta_k & 0\\
+0 & 0 & 1
+\end{array}\right]
+\left[\begin{array}{}
+{v_x}_k \\ {v_x}_k \\ \omega_k
+\end{array}\right]
+$$
+
+With:
+
+$$
+\left[\begin{array}{}
+{v_x}_k \\ {v_x}_k \\ \omega_k
+\end{array}\right] =
+\frac r 4
+\left[\begin{array}{cccc}
+-1 &  1 & -1 &  1 \\
+ 1 &  1 & -1 & -1 \\
+\frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)}
+\end{array}\right]
+\left[\begin{array}{}
+{\omega_1}_k \\ {\omega_2}_k \\ {\omega_3}_k \\ {\omega_4}_k
+\end{array}\right]
+$$
+
+---
+
+## Runge-Kutta integration
+For a more precise discrete integration is possible to use Runge-Kutta integration, that also consider current angular velocity and prevent errors with angular velocity $\omega_k \sim 0 $
+
+$$
+\begin{array}{l}
+x_{k+1} = x_k + T_s ({v_x}_k\cos\varphi_k - {v_y}_k \sin\varphi_k)\\
+y_{k+1} = y_k + T_s ({v_x}_k\sin\varphi_k + {v_y}_k \cos\varphi_k)\\
+\theta_{k+1} = \theta_k + T_s\omega_k\\
+T_s = t_{k+1} - t_k
+\end{array}
+$$
+
+With $\varphi_k = \theta_k + \frac{\omega_k T_s} 2$
+
+$$
+\left[\begin{array}{}
+x_{k+1} \\ y_{k+1} \\ \theta_{k+1}
+\end{array}\right]
+=
+\left[\begin{array}{}
+x_k \\ y_k \\ \theta_k
+\end{array}\right]
++  T_s
+\left[\begin{array}{}
+\cos\varphi_k & -\sin\varphi_k & 0\\
+\sin\varphi_k & \cos\varphi_k & 0\\
+0 & 0 & 1
+\end{array}\right]
+\left[\begin{array}{}
+{v_x}_k \\ {v_x}_k \\ \omega_k
+\end{array}\right]
+$$
+
+The associated system is not linear due to the presence of $\omega_k$ inside of the trigonometric function.
