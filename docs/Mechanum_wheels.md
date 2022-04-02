@@ -1,6 +1,6 @@
 # Studying the Mechanum wheel robot equations
 
-Variable notation:
+Variables notation:
 
 $r =$ wheel radius\
 $\pm l =$ wheel position along $x$\
@@ -125,8 +125,7 @@ $$
 $$
 \left[\begin{array}{}
 v_x \\ v_y \\ \dot\theta
-\end{array}\right] =
-\frac r 4
+\end{array}\right] = \frac r 4
 \left[\begin{array}{cccc}
 -1 &  1 & -1 &  1 \\
  1 &  1 & -1 & -1 \\
@@ -137,17 +136,12 @@ v_x \\ v_y \\ \dot\theta
 \end{array}\right]
 $$
 
-## The inverse kinematics equation is
+### The inverse kinematics equation is
 
 $$
 \left[\begin{array}{}
-\omega_1\\
-\omega_2\\
-\omega_3\\
-\omega_4\\
-\end{array}\right]
-=
-\frac 1 r
+\omega_1 \\ \omega_2 \\ \omega_3 \\ \omega_4
+\end{array}\right] = \frac 1 r
 \left[\begin{array}{rrr}
 -1 & 1  & (l+w)\\
 1  & 1  & (l+w)\\
@@ -155,11 +149,16 @@ $$
 1  & -1 & (l+w)
 \end{array}\right]
 \left[\begin{array}{}
-v_x\\
-v_y\\
-\dot \theta
+v_x \\ v_y \\ \dot\theta
 \end{array}\right]
 $$
+
+---
+
+## Discrete integration
+The previous equations can be used to compute direct and inverse kinematics istantanously; to perform discrete integration they hypotethically needs to remains constants during a finite period of time.
+
+To indicate a finite time period from now on all variable parameters will have a pedix to indicate the instant to consider
 
 ---
 
@@ -175,7 +174,7 @@ T_s = t_{k+1} - t_k
 \end{array}
 $$
 
-that expand to
+that in matrix format is
 
 $$
 \left[\begin{array}{}
@@ -193,23 +192,6 @@ x_k \\ y_k \\ \theta_k
 \end{array}\right]
 \left[\begin{array}{}
 {v_x}_k \\ {v_x}_k \\ \omega_k
-\end{array}\right]
-$$
-
-With:
-
-$$
-\left[\begin{array}{}
-{v_x}_k \\ {v_x}_k \\ \omega_k
-\end{array}\right] =
-\frac r 4
-\left[\begin{array}{cccc}
--1 &  1 & -1 &  1 \\
- 1 &  1 & -1 & -1 \\
-\frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)}
-\end{array}\right]
-\left[\begin{array}{}
-{\omega_1}_k \\ {\omega_2}_k \\ {\omega_3}_k \\ {\omega_4}_k
 \end{array}\right]
 $$
 
@@ -249,3 +231,179 @@ x_k \\ y_k \\ \theta_k
 $$
 
 The associated system is not linear due to the presence of $\omega_k$ inside of the trigonometric function.
+
+---
+
+## From RPM to Ticks
+Since we are dealing with discrete integration, it can be pretty useful to use encoder's ticks instead of wheel angular velocity.
+
+This also allows to use ticks data from the documentation Bag, witch is hypothetically more reliable since it should have less noise than RPM data.
+
+### Variables notation:
+$T_s = t_{k+1} - t_k=$ time period of discrete integration\
+$b =$ number of encoder's bit precision\
+$N = 2^b = $ ticks per round, since encoders have a full rotation scale\
+$\delta = \frac{2\pi} N = \frac{2\pi} {2^b} =$ angle per tick in radiant\
+${\alpha_k}_i = T_s{\omega_k}_i=$ angle rotation of a wheel in a time period\
+${n_k}_i =$ ticks registered from a wheel's encoder in a time period
+
+With this premises it's possible to convert previous equations for direct kinematics
+
+Since $T_s{\omega_k}_i = {\alpha_k}_i$ is the angle of rotation in a time period, it's possible to express ${\omega_k}_i = \frac {{\alpha_k}_i} {T_s}$;\
+${\alpha_k}_i$ represent an angle so it can be expressed in ticks using the formula ${\alpha}_i = {n_k}_i\delta$
+
+So, simplyfing
+
+$${\omega_k}_i = \frac{{n_k}_i\delta}{T_s} = \frac{2\pi}{T_sN}{n_k}_i $$
+$${n_k}_i = \frac{T_sN}{2\pi} {\omega_k}_i$$
+
+It's possible to rewrite direct and inverse kinematics equations as:
+
+$$
+\left[\begin{array}{}
+{v_x}_k \\ {v_y}_k \\ \omega_k
+\end{array}\right] = \frac r 4\ \frac {2\pi}{T_sN}
+\left[\begin{array}{cccc}
+-1 &  1 & -1 &  1 \\
+ 1 &  1 & -1 & -1 \\
+\frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)}
+\end{array}\right]
+\left[\begin{array}{}
+{n_1}_k \\ {n_2}_k \\ {n_3}_k \\ {n_4}_k
+\end{array}\right]
+$$
+
+and so, the inverse kinematics equation is
+
+$$
+\left[\begin{array}{}
+{n_1}_k \\ {n_2}_k \\ {n_3}_k \\ {n_4}_k
+\end{array}\right] = \frac 1 r \frac{T_sN}{2\pi}
+\left[\begin{array}{rrr}
+-1 & 1  & (l+w)\\
+1  & 1  & (l+w)\\
+-1 & -1 & (l+w)\\
+1  & -1 & (l+w)
+\end{array}\right]
+\left[\begin{array}{}
+v_x \\ v_y \\ \dot\theta
+\end{array}\right]
+$$
+
+This also allows to simplify equation for Euler and Runge-Kutta integration
+
+---
+
+## Ticks Euler integration
+
+The new equations don't need an integration over $T_s$ so it's possible to simplify them as:
+
+$$
+\begin{array}{l}
+x_{k+1} = x_k ({\Delta x}_k\cos\theta_k - {\Delta y}_k \sin\theta_k)\\
+y_{k+1} = y_k ({\Delta x}_k\sin\theta_k + {\Delta y}_k \cos\theta_k)\\
+\theta_{k+1} = \theta_k + {\Delta\theta}_k\\
+\end{array}
+$$
+
+representable as
+
+$$
+\left[\begin{array}{}
+x_{k+1} \\ y_{k+1} \\ \theta_{k+1}
+\end{array}\right]
+=
+\left[\begin{array}{}
+x_k \\ y_k \\ \theta_k
+\end{array}\right] +
+\left[\begin{array}{}
+\cos\theta_k & -\sin\theta_k & 0\\
+\sin\theta_k & \cos\theta_k & 0\\
+0 & 0 & 1
+\end{array}\right]
+\left[\begin{array}{}
+{\Delta x}_k \\ {\Delta y}_k \\ {\Delta \theta}_k
+\end{array}\right]
+$$
+
+and using simplified equation for inverse kinematic
+
+$$
+\left[\begin{array}{}
+{\Delta x}_k \\ {\Delta y}_k \\ {\Delta \theta}_k
+\end{array}\right] = \frac {\pi r} {2N}
+\left[\begin{array}{cccc}
+-1 &  1 & -1 &  1 \\
+ 1 &  1 & -1 & -1 \\
+\frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)}
+\end{array}\right]
+\left[\begin{array}{}
+{n_1}_k \\ {n_2}_k \\ {n_3}_k \\ {n_4}_k
+\end{array}\right]
+$$
+
+that can be written as a single matrix equation as
+
+$$
+\left[\begin{array}{}
+x_{k+1} \\ y_{k+1} \\ \theta_{k+1}
+\end{array}\right]
+=
+\left[\begin{array}{}
+x_k \\ y_k \\ \theta_k
+\end{array}\right] +
+
+\frac {\pi r} {2N}
+\left[\begin{array}{}
+\cos\theta_k & -\sin\theta_k & 0\\
+\sin\theta_k & \cos\theta_k & 0\\
+0 & 0 & 1
+\end{array}\right]
+\left[\begin{array}{cccc}
+-1 &  1 & -1 &  1 \\
+ 1 &  1 & -1 & -1 \\
+\frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)} &  \frac 1{(l+w)}
+\end{array}\right]
+\left[\begin{array}{}
+{n_1}_k \\ {n_2}_k \\ {n_3}_k \\ {n_4}_k
+\end{array}\right]
+$$
+
+---
+
+## Ticks Runge-Kutta integration
+It's also possible to simplify Runge-Kutta integration equations as
+
+$$
+\begin{array}{l}
+x_{k+1} = x_k ({\Delta x}_k\cos\varphi_k - {\Delta y}_k \sin\varphi_k)\\
+y_{k+1} = y_k ({\Delta x}_k\sin\varphi_k + {\Delta y}_k \cos\varphi_k)\\
+\theta_{k+1} = \theta_k + {\Delta\theta}_k\\
+\end{array}
+$$
+
+It's also possible to express $\omega_k = \frac r 4 \frac {2\pi}{T_sN} \frac1 {(l+w)} \sum_{i=1}^4{n_i}_k$ , and so represent $\varphi_k$ as
+
+With $\varphi_k = \theta_k + \frac{r\pi}{4N(l+w)}\sum_{i=1}^4{n_i}_k$
+
+$$
+\left[\begin{array}{}
+x_{k+1} \\ y_{k+1} \\ \theta_{k+1}
+\end{array}\right]
+=
+\left[\begin{array}{}
+x_k \\ y_k \\ \theta_k
+\end{array}\right] +
+\left[\begin{array}{}
+\cos\varphi_k & -\sin\varphi_k & 0\\
+\sin\varphi_k & \cos\varphi_k & 0\\
+0 & 0 & 1
+\end{array}\right]
+\left[\begin{array}{}
+{\Delta x}_k \\ {\Delta y}_k \\ {\Delta \theta}_k
+\end{array}\right]
+$$
+
+This discrete equations can be easily converted in functions from any programming language, for example C++, required for this project
+
+----
