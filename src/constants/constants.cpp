@@ -1,6 +1,6 @@
 #include "constants.hpp"
 
-//#define CONST_MAT true
+#define CONST_MAT true
 
 #ifndef CONST_MAT
 #define CONST_MAT false
@@ -8,8 +8,8 @@
 
 #if CONST_MAT
     #define DI (RADIUS/4)
-    #define IN (1/RADIUS)
     #define DD (PI_2*RADIUS/T_ROUND)
+    #define IN (1/RADIUS)
 #else
     #define DI  1
     #define IN  1

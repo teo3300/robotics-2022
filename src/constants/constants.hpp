@@ -27,7 +27,7 @@
 extern double dir_kin_mat[
     WHEELS * VARS];
 
-extern double discrete_dir_kin_mat[
+extern double dis_dir_kin_mat[
     WHEELS * VARS];
 
 extern double inv_kin_mat[

@@ -24,13 +24,16 @@ public:
     inline unsigned int getHeight(){ return this->height; }
     inline double get(unsigned int i, unsigned int j){ return dat[cmpt(i, j)]; }
     inline void set(unsigned int i, unsigned int j, double value){ dat[cmpt(i,j)] = value; }
+    inline double sca(Matrix mat) { return get(0,0); }
     void fill(double t[]);
-    void mul(Matrix a, Matrix b);
-    void mul(double sca, Matrix mat);
-    inline void mul(double sca) { mul(sca, *this); }
-    Matrix operator = (const Matrix& other);
+    Matrix* sum(Matrix* a, Matrix* b);
+    Matrix* mul(Matrix* a, Matrix* b);
+    Matrix* mul(double sca, Matrix mat);
+    inline void mult(double sca) { mul(sca, *this); }
+    /*Matrix operator = (const Matrix& other);
     const Matrix operator * (Matrix& other);
     const Matrix operator * (double other);
+    const Matrix operator + (Matrix& other);*/
 };
 
 std::ostream& operator<<(std::ostream &strm, Matrix &mat);
