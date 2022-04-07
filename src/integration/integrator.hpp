@@ -15,7 +15,6 @@ extern double set_base_int[9];
 class Integrator {
     unsigned int counter;
     Matrix* state;
-    Matrix* bufferState;
     Matrix* dir_k;
     Matrix* base_int;
     Method method;

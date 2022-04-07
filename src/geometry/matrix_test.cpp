@@ -22,9 +22,9 @@ int main(){
     Matrix a(3,4,testA);
     Matrix b(4,2,testB);
     Matrix c(3,2,testC);
-    //c = a*b;
+    c = a*b;
     Matrix d(3,2,testC);
-    //d = c*2;
+    d = c*2;
     std::cout << "Matrix A:\n" << a << "\n";
     std::cout << "Matrix B:\n" << b << "\n";
     std::cout << "Matrix C mult:\n" << c << "\n";
@@ -32,6 +32,6 @@ int main(){
     Matrix e(4,1,testA);
     Matrix f(4,1,testA);
     Matrix g(4,1);
-    //g = e+f;
+    g = e*2+f;
     std::cout << "Matrix G mult:\n" << g << "\n";
 }

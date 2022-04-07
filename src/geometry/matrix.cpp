@@ -32,14 +32,12 @@ inline void Matrix::fill(double t[]){
 }
 
 Matrix* Matrix::sum(Matrix* a, Matrix* b){
-    if(this->width != 1 || a->width != 1 || b->width != 1){
-        throw std::invalid_argument("Error: can only add vectors");
-    }
-    if(!(this->height == a->height && this->height == b->height)){
+    if(!(this->height == a->height && this->height == b->height &&
+         this->width == a->width && this->width == b->width)){
         throw std::invalid_argument("Error in vector sum: different size");
     }
 
-    for(int i=0; i<this->height; i++){
+    for(int i=0; i<this->height*width; i++){
         this->dat[i] = a->dat[i]+b->dat[i];
     }
     return this;
@@ -69,7 +67,7 @@ Matrix* Matrix::mul(double sca, Matrix mat){
     }
     return this;
 }
-/*
+
 Matrix Matrix::operator = (const Matrix& other){
     if(this->width != other.width || this->height != other.height)
         throw std::invalid_argument("Assignment between different size matrix");
@@ -79,8 +77,21 @@ Matrix Matrix::operator = (const Matrix& other){
     return *this;
 }
 
-const Matrix Matrix::operator * (Matrix& other) {
-    if(this->width != other.height){
+const Matrix Matrix::operator + (const Matrix& other) const {
+    if(!(this->height == other.height && this->width == other.width)){
+        throw std::invalid_argument("Error in matrix sum: different size");
+    }
+
+    Matrix tmp(this->height,this->width);
+    for(int i=0; i<this->width*height; i++){
+        tmp.dat[i] = this->dat[i]+other.dat[i];
+    }
+
+    return tmp;
+}
+
+const Matrix Matrix::operator * (const Matrix& other) const {
+    if(this->getWidth() != other.getHeight()){
         throw std::invalid_argument("Error in matrix moltiplication: Wrong matrix size");
     }
     Matrix tmp(this->height,other.width);
@@ -97,30 +108,13 @@ const Matrix Matrix::operator * (Matrix& other) {
     return tmp;
 }
 
-const Matrix Matrix::operator * (double other) {
-    Matrix tmp(height, width);
+const Matrix Matrix::operator * (double sca) const {
+    Matrix tmp(this->height, this->width);
     for(int i=0; i<width*height; i++){
-        tmp.dat[i] = dat[i]*other;
+        tmp.dat[i] = dat[i]*sca;
     }
     return tmp;
 }
-
-const Matrix Matrix::operator + (Matrix& other){
-    if(this->width != 1 || other.width != 1){
-        throw std::invalid_argument("Error: can only add vectors");
-    }
-    if(this->height != other.height){
-        throw std::invalid_argument("Error in vector sum: different size");
-    }
-
-    Matrix tmp(this->height,1);
-    for(int i=0; i<this->height; i++){
-        tmp.dat[i] = this->dat[i]+other.dat[i];
-    }
-
-    return tmp;
-}
-*/
 
 std::ostream& operator<<(std::ostream &strm, Matrix &mat) {
     std::string buffer = "";

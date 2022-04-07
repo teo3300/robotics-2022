@@ -7,13 +7,11 @@ double set_base_int[9] = {0,0,0,0,0,0,0,0,1};
 Integrator::Integrator(Method method){
     dir_k = nullptr;
     state = new Matrix(3,1,zeroPose);
-    bufferState = new Matrix(3,1,zeroPose);
     base_int = new Matrix(3,3,set_base_int);
     counter = 0;
 }
 Integrator::~Integrator(){
     delete state;
-    delete bufferState;
     delete base_int;
     delete dir_k;
 }
@@ -24,16 +22,15 @@ void Integrator::dirKin(unsigned int h, unsigned int w, double mat[]) {
 
 Matrix* Integrator::integrate(Matrix* ticks){
     setAngle(ticks);
-    bufferState->mul(dir_k, ticks);
-    bufferState->mul(base_int, bufferState);
-    state->sum(state,bufferState);
+
+    (*state) = (*state) + (*base_int) * (*dir_k) * (*ticks);
 
     return state;
 }
 
 void Integrator::setAngle(Matrix* ticks) {
     double vSin = getT();
-    if(method == EULER) {
+    if(method == RUNGE_KUTTA) {
         vSin += offset(ticks);
     }
     double vCos = cos(vSin);
