@@ -3,23 +3,18 @@
 #include <iostream>
 #include <stdexcept>
 
-Matrix::Matrix(unsigned int height, unsigned int width){
-    this->width = width;
-    this->height = height;
-    this->dat = new double[height*width];
-}
+Matrix::Matrix(unsigned int height, unsigned int width)
+        : width(width), height(height){
+    dat = new double[width*height];
+};
 
-Matrix::Matrix(unsigned int height, unsigned int width, double val[]){
-    this->width = width;
-    this->height = height;
-    this->dat = new double[height*width];
+Matrix::Matrix(unsigned int height, unsigned int width, double val[])
+        : Matrix(height, width){
     fill(val);
 }
 
-Matrix::Matrix(Matrix& src){
-    this->width = src.getWidth();
-    this->height = src.getHeight();
-    this->dat = new double[height*width];
+Matrix::Matrix(const Matrix &src)
+        : Matrix(src.height,src.width){
     fill(src.dat);
 }
 
@@ -31,9 +26,11 @@ inline void Matrix::fill(double t[]){
     memcpy(this->dat, t, width*height*sizeof(double));
 }
 
+/* Functions omitted
+ *
+ *
 Matrix* Matrix::sum(Matrix* a, Matrix* b){
-    if(!(this->height == a->height && this->height == b->height &&
-         this->width == a->width && this->width == b->width)){
+    if(this->differ(*a) | this->differ(*b)){
         throw std::invalid_argument("Error in vector sum: different size");
     }
 
@@ -44,7 +41,7 @@ Matrix* Matrix::sum(Matrix* a, Matrix* b){
 }
 
 Matrix* Matrix::mul(Matrix* a, Matrix* b) {
-    if(a->getWidth() != b->getHeight()){
+    if(a->notMult(*b)){
         throw std::invalid_argument("Error in matrix moltiplication: Wrong matrix size");
     }
     double buffer;
@@ -67,9 +64,10 @@ Matrix* Matrix::mul(double sca, Matrix mat){
     }
     return this;
 }
+*/
 
 Matrix Matrix::operator = (const Matrix& other){
-    if(this->width != other.width || this->height != other.height)
+    if(this->differ(other))
         throw std::invalid_argument("Assignment between different size matrix");
     this->width = other.width;
     this->height = other.height;
@@ -78,7 +76,7 @@ Matrix Matrix::operator = (const Matrix& other){
 }
 
 const Matrix Matrix::operator + (const Matrix& other) const {
-    if(!(this->height == other.height && this->width == other.width)){
+    if(this->differ(other)){
         throw std::invalid_argument("Error in matrix sum: different size");
     }
 
@@ -91,7 +89,7 @@ const Matrix Matrix::operator + (const Matrix& other) const {
 }
 
 const Matrix Matrix::operator * (const Matrix& other) const {
-    if(this->getWidth() != other.getHeight()){
+    if(this->notMult(other)){
         throw std::invalid_argument("Error in matrix moltiplication: Wrong matrix size");
     }
     Matrix tmp(this->height,other.width);
