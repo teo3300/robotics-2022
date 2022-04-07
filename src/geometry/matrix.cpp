@@ -3,13 +3,13 @@
 #include <iostream>
 #include <stdexcept>
 
-Matrix::Matrix(unsigned int height, unsigned int width){
+Matrix::Matrix(unsigned int width, unsigned int height){
     this->width = width;
     this->height = height;
     this->dat = new double[height*width];
 }
 
-Matrix::Matrix(unsigned int height, unsigned int width, double val[]){
+Matrix::Matrix(unsigned int width, unsigned int height, double val[]){
     this->width = width;
     this->height = height;
     this->dat = new double[height*width];
