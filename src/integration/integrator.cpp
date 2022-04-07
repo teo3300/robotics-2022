@@ -4,7 +4,8 @@
 double zeroPose[3] = {0,0,0};
 double set_base_int[9] = {0,0,0,0,0,0,0,0,1};
 
-Integrator::Integrator(Method method){
+Integrator::Integrator(Method method, double rk_offset){
+    rk_o = rk_offset;
     dir_k = nullptr;
     state = new Matrix(3,1,zeroPose);
     base_int = new Matrix(3,3,set_base_int);
@@ -18,6 +19,7 @@ Integrator::~Integrator(){
 
 void Integrator::dirKin(unsigned int h, unsigned int w, double mat[]) {
     dir_k = new Matrix(h, w, mat);
+    signals = w;
 }
 
 Matrix* Integrator::integrate(Matrix* ticks){
@@ -43,8 +45,8 @@ void Integrator::setAngle(Matrix* ticks) {
 
 double Integrator::offset(Matrix* ticks) {
     double acc = 0;
-    for(int i=0; i<WHEELS; i++){
+    for(int i=0; i<signals; i++){
         acc += ticks->get(i,0);
     }
-    return acc*(RADIUS*PI_2/(T_ROUND*(LENGTH+WIDTH)));
+    return acc*rk_o;
 };

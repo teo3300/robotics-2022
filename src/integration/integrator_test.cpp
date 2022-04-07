@@ -9,7 +9,8 @@ double ROT[] = {1,1,1,1};
 double FWD[] = {-1,1,-1,1};
 
 int main(){
-    Integrator I(RUNGE_KUTTA);
+    Integrator I(RUNGE_KUTTA,
+                    (RADIUS*PI_2/(T_ROUND*(LENGTH+WIDTH))));
     I.dirKin(3, 4, dir_kin_mat);
     Matrix stand(4,1,STAND);
     Matrix fwd(4,1,FWD);
