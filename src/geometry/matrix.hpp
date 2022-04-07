@@ -40,6 +40,7 @@ public:
     const Matrix operator + (const Matrix& other) const;
     const Matrix operator * (const Matrix& other) const;
     const Matrix operator * (double sca) const;
+    const Matrix operator ! () const;
 };
 
 inline Matrix operator*(double sca, const Matrix& mat){

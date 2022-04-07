@@ -34,4 +34,6 @@ int main(){
     Matrix g(4,1);
     g = e*2+f;
     std::cout << "Matrix G mult:\n" << g << "\n";
+    Matrix h = !g;
+    std::cout << "Matrix G^T:\n" << h << "\n";
 }

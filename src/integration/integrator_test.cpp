@@ -5,21 +5,24 @@
 #include <iostream> 
 
 double STAND[] ={0,0,0,0};
-double ROT[] = {1,1,1,1};
-double FWD[] = {-1,1,-1,1};
+double ROT[] = {100,100,100,100};
+double FWD[] = {-100,100,-100,100};
+double FR[] = {0,100,0,100};
 
 int main(){
-    Integrator I(RUNGE_KUTTA,
-                    (RADIUS*PI_2/(T_ROUND*(LENGTH+WIDTH))));
-    I.dirKin(3, 4, dir_kin_mat);
+    Integrator I(EULER, RUNGE_KUTTA_OFFSET);
+    I.dirKin(3, 4, dis_dir_kin_mat);
     Matrix stand(4,1,STAND);
     Matrix fwd(4,1,FWD);
     Matrix rot(4,1,ROT);
-    Matrix* output;
-    output = I.integrate(&stand);
-    std::cout << "Matrice stato dopo movimento nullo:\n" << *output << "\n";
-    output = I.integrate(&rot);
-    std::cout << "Matrice stato dopo rotazione:\n" << *output << "\n";
-    output = I.integrate(&fwd);
-    std::cout << "Matrice stato dopo avanzamento:\n" << *output << "\n";
+    Matrix fr(4,1,FR);
+    Matrix output(3,1);
+    output = I << stand;
+    std::cout << "Stato nullo:\n" << output << "\n";
+    output = I << rot;
+    std::cout << "Stato rotazione:\n" << output << "\n";
+    output = I << fwd;
+    std::cout << "Stato avanzamento:\n" << output << "\n";
+    output = I << fr;
+    std::cout << "Stato roto-avanzamento:\n" << output << "\n";
 }

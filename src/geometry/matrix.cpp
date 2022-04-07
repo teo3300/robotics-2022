@@ -92,6 +92,7 @@ const Matrix Matrix::operator * (const Matrix& other) const {
     if(this->notMult(other)){
         throw std::invalid_argument("Error in matrix moltiplication: Wrong matrix size");
     }
+
     Matrix tmp(this->height,other.width);
     double buffer;
     for(int i=0; i<this->height; i++){
@@ -110,6 +111,17 @@ const Matrix Matrix::operator * (double sca) const {
     Matrix tmp(this->height, this->width);
     for(int i=0; i<width*height; i++){
         tmp.dat[i] = dat[i]*sca;
+    }
+    return tmp;
+}
+
+
+const Matrix Matrix::operator ! () const {
+    Matrix tmp(this->width, this->height);
+    for(int i=0; i<height; i++){
+        for(int j=0; j<width; j++){
+            tmp.set(j,i,get(i,j));
+        }
     }
     return tmp;
 }

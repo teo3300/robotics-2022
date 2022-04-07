@@ -33,4 +33,6 @@ extern double dis_dir_kin_mat[
 extern double inv_kin_mat[
     VARS * WHEELS];
 
+#define RUNGE_KUTTA_OFFSET (RADIUS*PI_2/(T_ROUND*(LENGTH+WIDTH)))
+
 #endif//CONSTANTS_H_
