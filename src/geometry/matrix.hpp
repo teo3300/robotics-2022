@@ -25,8 +25,8 @@ public:
     Matrix(Matrix const &src);
     ~Matrix();
 
-    inline unsigned int getWidth() const { return this->width; }
-    inline unsigned int getHeight() const { return this->height; }
+    inline unsigned int getWidth() { return this->width; }
+    inline unsigned int getHeight() { return this->height; }
     inline double get(unsigned int i, unsigned int j)const{ return dat[cmpt(i, j)]; }
 
     inline void set(unsigned int i, unsigned int j, double value){ dat[cmpt(i,j)] = value; }
@@ -36,17 +36,15 @@ public:
     Matrix* mul(Matrix* a, Matrix* b);
     Matrix* mul(double sca, Matrix mat);
     inline void mult(double sca) { mul(sca, *this); }*/
-    Matrix operator = (const Matrix& other);
-    const Matrix operator + (const Matrix& other) const;
-    const Matrix operator * (const Matrix& other) const;
-    const Matrix operator * (double sca) const;
-    const Matrix operator ! () const;
+    Matrix operator = (Matrix other);
+    Matrix operator + (Matrix other);
+    Matrix operator * (Matrix other);
+    Matrix operator * (double sca) const;
+    Matrix operator ! ();
 };
 
 inline Matrix operator*(double sca, const Matrix& mat){
-    Matrix tmp(mat.getHeight(), mat.getWidth());
-    tmp = mat * sca;
-    return tmp;
+    return mat * sca;
 };
 std::ostream& operator<<(std::ostream &strm, Matrix &mat);
 

@@ -21,19 +21,18 @@ double testC[] = {
 int main(){
     Matrix a(3,4,testA);
     Matrix b(4,2,testB);
-    Matrix c(3,2,testC);
-    c = a*b;
-    Matrix d(3,2,testC);
-    d = c*2;
+    Matrix c = a*b;
+    Matrix d = c*2;
     std::cout << "Matrix A:\n" << a << "\n";
     std::cout << "Matrix B:\n" << b << "\n";
-    std::cout << "Matrix C mult:\n" << c << "\n";
-    std::cout << "Matrix D mult:\n" << d << "\n";
+    std::cout << "Matrix C:\n" << c << "\n";
+    std::cout << "Matrix D:\n" << d << "\n";
     Matrix e(4,1,testA);
     Matrix f(4,1,testA);
-    Matrix g(4,1);
-    g = e*2+f;
-    std::cout << "Matrix G mult:\n" << g << "\n";
+    Matrix g = e*2+f;
+    std::cout << "Matrix E:\n" << e << "\n";
+    std::cout << "Matrix F:\n" << f << "\n";
+    std::cout << "Matrix G:\n" << g << "\n";
     Matrix h = !g;
     std::cout << "Matrix G^T:\n" << h << "\n";
 }

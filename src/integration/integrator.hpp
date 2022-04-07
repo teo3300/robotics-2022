@@ -21,15 +21,15 @@ class Integrator {
     Matrix* dir_k;
     Method method;
 
-    inline void setX(double x) const { return state->set(0, 0,x); };
-    inline void setY(double y) const { return state->set(1, 0,y); };
-    inline void setT(double z) const { return state->set(2, 0,z); };
-    double offset(Matrix ticks)const;
-    void setAngle(Matrix ticks)const;
+    inline void setX(double x) { return state->set(0, 0,x); };
+    inline void setY(double y) { return state->set(1, 0,y); };
+    inline void setT(double z) { return state->set(2, 0,z); };
+    double offset(Matrix ticks);
+    void setAngle(Matrix ticks);
 public:
-    inline double getX() const { return state->get(0, 0); };
-    inline double getY() const { return state->get(1, 0); };
-    inline double getT() const { return state->get(2, 0); };
+    inline double getX() { return state->get(0, 0); };
+    inline double getY() { return state->get(1, 0); };
+    inline double getT() { return state->get(2, 0); };
     // specify which direct kinematic rule to use
     Integrator(Method method);
     Integrator(Method method, double rk_offset);
@@ -38,7 +38,7 @@ public:
     void inline setPos(double t[]) { this->state->fill(t); }
     void inline resetPos() { setPos(zeroPose); }
     Matrix integrate(Matrix ticks);
-    const Matrix operator<< (const Matrix &ticks) const;
+    Matrix operator<< (Matrix ticks);
 };
 
 #endif//INTEGRATOR_HPP_

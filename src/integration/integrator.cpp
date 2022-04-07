@@ -36,7 +36,7 @@ Matrix Integrator::integrate(Matrix ticks) {
     return *state;
 }
 
-const Matrix Integrator::operator<< (const Matrix &ticks) const {
+Matrix Integrator::operator<< (Matrix ticks) {
     
     *speed = (*dir_k) * (ticks);
 
@@ -49,7 +49,7 @@ const Matrix Integrator::operator<< (const Matrix &ticks) const {
     return ret;
 }
 
-void Integrator::setAngle(Matrix ticks) const {
+void Integrator::setAngle(Matrix ticks) {
     double vSin = getT();
     if(method == RUNGE_KUTTA) {
         vSin += offset(ticks);
@@ -62,7 +62,7 @@ void Integrator::setAngle(Matrix ticks) const {
     base_int->set(1, 1,  vCos);
 }
 
-double Integrator::offset(Matrix ticks) const {
+double Integrator::offset(Matrix ticks) {
     double acc = 0;
     for(int i=0; i<signals; i++){
         acc += ticks.get(i,0);

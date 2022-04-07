@@ -25,4 +25,6 @@ int main(){
     std::cout << "Stato avanzamento:\n" << output << "\n";
     output = I << fr;
     std::cout << "Stato roto-avanzamento:\n" << output << "\n";
+    Matrix culo = Matrix(3,4,dis_dir_kin_mat)*rot;
+    std::cout << "culo:\n" << culo << "\n";
 }

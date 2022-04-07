@@ -66,7 +66,7 @@ Matrix* Matrix::mul(double sca, Matrix mat){
 }
 */
 
-Matrix Matrix::operator = (const Matrix& other){
+Matrix Matrix::operator = (const Matrix other) {
     if(this->differ(other))
         throw std::invalid_argument("Assignment between different size matrix");
     this->width = other.width;
@@ -75,7 +75,7 @@ Matrix Matrix::operator = (const Matrix& other){
     return *this;
 }
 
-const Matrix Matrix::operator + (const Matrix& other) const {
+Matrix Matrix::operator + (const Matrix other) {
     if(this->differ(other)){
         throw std::invalid_argument("Error in matrix sum: different size");
     }
@@ -88,7 +88,7 @@ const Matrix Matrix::operator + (const Matrix& other) const {
     return tmp;
 }
 
-const Matrix Matrix::operator * (const Matrix& other) const {
+Matrix Matrix::operator * (const Matrix other) {
     if(this->notMult(other)){
         throw std::invalid_argument("Error in matrix moltiplication: Wrong matrix size");
     }
@@ -107,7 +107,7 @@ const Matrix Matrix::operator * (const Matrix& other) const {
     return tmp;
 }
 
-const Matrix Matrix::operator * (double sca) const {
+Matrix Matrix::operator * (double sca) const {
     Matrix tmp(this->height, this->width);
     for(int i=0; i<width*height; i++){
         tmp.dat[i] = dat[i]*sca;
@@ -116,7 +116,7 @@ const Matrix Matrix::operator * (double sca) const {
 }
 
 
-const Matrix Matrix::operator ! () const {
+Matrix Matrix::operator ! () {
     Matrix tmp(this->width, this->height);
     for(int i=0; i<height; i++){
         for(int j=0; j<width; j++){
