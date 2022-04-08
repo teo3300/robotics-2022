@@ -25,4 +25,6 @@ int main(int argc, char *argv[]){
     angular.compute();
     A = angular.getResults();
     std::cout << "Matrice A ticks: "<<"\n"<<(*A)<<"\n";
+    delete matrice1;
+    return 0;
 }
