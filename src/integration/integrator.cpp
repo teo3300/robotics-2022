@@ -4,10 +4,8 @@
 double zeroPose[3] = {0,0,0};
 double set_base_int[9] = {0,0,0,0,0,0,0,0,1};
 
-Integrator::Integrator(Method method) : Integrator(method,0) {};
-
-Integrator::Integrator(Method method, double rk_offset)
-        : method(method), dir_k(nullptr), counter(0), rk_offset(rk_offset) {
+Integrator::Integrator(Method method, double period)
+        : method(method), dir_k(nullptr), counter(0), period(period) {
     state = new Matrix(3,1,zeroPose);
     speed = new Matrix(3,1);
     base_int = new Matrix(3,3,set_base_int);
@@ -29,7 +27,7 @@ Matrix Integrator::integrate(Matrix ticks) {
 
     *speed = (*dir_k) * (ticks);
 
-    setAngle(ticks);
+    setAngle();
 
     (*state) = (*state) + (*base_int) * (*speed);
 
@@ -40,7 +38,7 @@ Matrix Integrator::operator<< (Matrix ticks) {
     
     *speed = (*dir_k) * (ticks);
 
-    setAngle(ticks);
+    setAngle();
 
     (*state) = (*state) + (*base_int) * (*speed);
 
@@ -49,10 +47,10 @@ Matrix Integrator::operator<< (Matrix ticks) {
     return ret;
 }
 
-void Integrator::setAngle(Matrix ticks) {
+void Integrator::setAngle() {
     double vSin = getT();
     if(method == RUNGE_KUTTA) {
-        vSin += offset(ticks);
+        vSin += offset();
     }
     double vCos = cos(vSin);
     vSin = sin(vSin);
@@ -61,11 +59,3 @@ void Integrator::setAngle(Matrix ticks) {
     base_int->set(1, 0,  vSin);
     base_int->set(1, 1,  vCos);
 }
-
-double Integrator::offset(Matrix ticks) {
-    double acc = 0;
-    for(int i=0; i<signals; i++){
-        acc += ticks.get(i,0);
-    }
-    return acc*rk_offset;
-};

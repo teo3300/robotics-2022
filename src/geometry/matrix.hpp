@@ -10,12 +10,12 @@ class Matrix {
     unsigned int width;
     double* dat;
 
-    inline unsigned int cmpt(unsigned int i, unsigned int j) const { return j+i*width; }
+    inline unsigned int cmpt(unsigned int i, unsigned int j) { return j+i*width; }
 
-    inline int notMult(Matrix other) const { return other.height - this->width;}
-    inline int diffWidth(Matrix other) const { return other.width - this->width; }
-    inline int diffHeight(Matrix other) const { return other.width - this->width; }
-    inline int differ(Matrix other) const {
+    inline int notMult(Matrix other) { return other.height - this->width;}
+    inline int diffWidth(Matrix other) { return other.width - this->width; }
+    inline int diffHeight(Matrix other) { return other.width - this->width; }
+    inline int differ(Matrix other) {
         return this->diffHeight(other) | this->diffWidth(other);
     }
 
@@ -27,7 +27,7 @@ public:
 
     inline unsigned int getWidth() { return this->width; }
     inline unsigned int getHeight() { return this->height; }
-    inline double get(unsigned int i, unsigned int j)const{ return dat[cmpt(i, j)]; }
+    inline double get(unsigned int i, unsigned int j) { return dat[cmpt(i, j)]; }
 
     inline void set(unsigned int i, unsigned int j, double value){ dat[cmpt(i,j)] = value; }
     inline double sca(Matrix mat) { return get(0,0); }
@@ -43,7 +43,7 @@ public:
     Matrix operator ! ();
 };
 
-inline Matrix operator*(double sca, const Matrix& mat){
+inline Matrix operator*(double sca, Matrix& mat){
     return mat * sca;
 };
 std::ostream& operator<<(std::ostream &strm, Matrix &mat);

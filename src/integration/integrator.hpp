@@ -14,25 +14,28 @@ extern double set_base_int[9];
 class Integrator {
     unsigned int counter;
     unsigned int signals;
-    double rk_offset;
+    double period;
     Matrix* state;
     Matrix* base_int;
     Matrix* speed;
     Matrix* dir_k;
     Method method;
 
-    inline void setX(double x) { return state->set(0, 0,x); };
-    inline void setY(double y) { return state->set(1, 0,y); };
-    inline void setT(double z) { return state->set(2, 0,z); };
-    double offset(Matrix ticks);
-    void setAngle(Matrix ticks);
+    inline void setX(double x) { return state->set(0, 0,x); }
+    inline void setY(double y) { return state->set(1, 0,y); }
+    inline void setT(double z) { return state->set(2, 0,z); }
+    inline double offset() { return getW() * period / 2; }
+    void setAngle();
 public:
-    inline double getX() { return state->get(0, 0); };
-    inline double getY() { return state->get(1, 0); };
-    inline double getT() { return state->get(2, 0); };
-    // specify which direct kinematic rule to use
-    Integrator(Method method);
-    Integrator(Method method, double rk_offset);
+    inline double getX() { return state->get(0, 0); }
+    inline double getY() { return state->get(1, 0); }
+    inline double getT() { return state->get(2, 0); }
+    inline double getVx() { return speed->get(0, 0); }
+    inline double getVy() { return speed->get(1, 0); }
+    inline double getW()  { return speed->get(2, 0); }
+    inline double getPeriod() { return period; }
+    // Runge kutta integration
+    Integrator(Method method, double period);
     ~Integrator();
     void dirKin(unsigned int h, unsigned int w, double mat[]);
     void inline setPos(double t[]) { this->state->fill(t); }

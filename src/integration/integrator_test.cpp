@@ -7,10 +7,10 @@
 double STAND[] ={0,0,0,0};
 double ROT[] = {100,100,100,100};
 double FWD[] = {-100,100,-100,100};
-double FR[] = {0,100,0,100};
+double FR[] = {-90,110,-90,110};
 
 int main(){
-    Integrator I(EULER, RUNGE_KUTTA_OFFSET);
+    Integrator I(EULER, PERIOD);
     I.dirKin(3, 4, dis_dir_kin_mat);
     Matrix stand(4,1,STAND);
     Matrix fwd(4,1,FWD);
@@ -25,6 +25,4 @@ int main(){
     std::cout << "Stato avanzamento:\n" << output << "\n";
     output = I << fr;
     std::cout << "Stato roto-avanzamento:\n" << output << "\n";
-    Matrix culo = Matrix(3,4,dis_dir_kin_mat)*rot;
-    std::cout << "culo:\n" << culo << "\n";
 }
