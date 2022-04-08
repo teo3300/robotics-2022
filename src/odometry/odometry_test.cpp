@@ -1,5 +1,5 @@
 #include "odometry.hpp"
-
+#include "../constants/constants.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -9,7 +9,8 @@ int main(int argc, char *argv[]){
     if(argc != 5) {
         std::cout << "Bad args\n";
     }
-    Odometry angular(ANG_VEL);
+    Matrix* matrice = new Matrix(3,4,dir_kin_mat);
+    Odometry angular(matrice);
     double swap[WHEELS];
     for(int i=0;i<WHEELS;i++){
         swap[i]=atof(argv[i+1]);
@@ -17,7 +18,11 @@ int main(int argc, char *argv[]){
     angular.setVal(swap);
     angular.compute();
     Matrix* A = angular.getResults();
-    std::cout << "Matrice A : "<<"\n"<<(*A)<<"\n";
-    //Odometry ticks(TICKS);
-
+    std::cout << "Matrice A w : "<<"\n"<<(*A)<<"\n";
+    delete matrice;
+    Matrix* matrice1 = new Matrix(3,4,dis_dir_kin_mat);
+    angular.setModel(matrice1);
+    angular.compute();
+    A = angular.getResults();
+    std::cout << "Matrice A ticks: "<<"\n"<<(*A)<<"\n";
 }

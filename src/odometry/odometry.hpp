@@ -1,19 +1,17 @@
-#include "../constants/constants.hpp"
 #include "../geometry/matrix.hpp"
 
 #include <math.h>
 
-enum Source{ANG_VEL,TICKS};
-
 class Odometry {
-    Source source;
+    Matrix* model;
     Matrix* state;
     Matrix* result;
 public:
-    Odometry(Source source);
+    Odometry(Matrix* model);
     ~Odometry();
-    //set value of entire array
+    //set value for omega or ticks
     void setVal(double source[]){return state->fill(source);};
+    void setModel(Matrix* m){this->model = m;};
     Matrix* getResults(){return this->result;};
     void compute();
 };
