@@ -1,10 +1,11 @@
 #include "odometry.hpp"
+#include <cstdio>
+#include <cstdlib>
 
-static double clean[WHEELS*VARS] = {0,0,0,0,0,0,0,0,0,0,0,0};
-
-Odometry::Odometry(unsigned int h, unsigned int w, double kinematic[]){
-    this->state = new Matrix(3,1);
-    this->kinematic = new Matrix(h,w,kinematic);
+Odometry::Odometry(Matrix* model){
+    this->model = model;
+    this->state = new Matrix(this->model->getWidth(),1);
+    this->result = new Matrix(this->model->getHeight(),1);
 }
 
 Odometry::~Odometry(){
@@ -12,11 +13,6 @@ Odometry::~Odometry(){
     delete kinematic;
 }
 
-Matrix Odometry::operator<< (Matrix src) {
-
-    (*state) = (*kinematic) * (src);
-
-    Matrix ret(*state);
-
-    return ret;
+void Odometry::compute(){
+    (*this->result) = (*this->model) * (*this->state);
 }

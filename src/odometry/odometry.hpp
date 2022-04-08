@@ -1,21 +1,19 @@
-#ifndef ODOMETRY_HPP_
-#define ODOMETRY_HPP_
-
-#include "../constants/constants.hpp"
 #include "../geometry/matrix.hpp"
 
 #include <math.h>
 
-enum Source{ANG_VEL, TICKS};
-
 class Odometry {
+    Matrix* model;
     Matrix* state;
+    Matrix* result;
     Matrix* kinematic;
 
 public:
-    Odometry(unsigned int h, unsigned int w, double kinematic[]);
+    Odometry(Matrix* model);
     ~Odometry();
-    Matrix operator<< (Matrix src);
+    //set value for omega or ticks
+    void setVal(double source[]){return state->fill(source);};
+    void setModel(Matrix* m){this->model = m;};
+    Matrix* getResults(){return this->result;};
+    void compute();
 };
-
-#endif//ODOMETRY_HPP_
