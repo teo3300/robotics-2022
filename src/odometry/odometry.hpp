@@ -1,19 +1,21 @@
+#ifndef ODOMETRY_HPP_
+#define ODOMETRY_HPP_
+
 #include "../constants/constants.hpp"
 #include "../geometry/matrix.hpp"
 
 #include <math.h>
 
-enum Source{ANG_VEL,TICKS};
+enum Source{ANG_VEL, TICKS};
 
 class Odometry {
-    Source source;
     Matrix* state;
-    Matrix* result;
+    Matrix* kinematic;
+
 public:
-    Odometry(Source source);
+    Odometry(unsigned int h, unsigned int w, double kinematic[]);
     ~Odometry();
-    //set value of entire array
-    void setVal(double source[]){return state->fill(source);};
-    Matrix* getResults(){return this->result;};
-    void compute();
+    Matrix operator<< (Matrix src);
 };
+
+#endif//ODOMETRY_HPP_

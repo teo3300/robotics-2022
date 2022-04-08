@@ -1,4 +1,6 @@
+#include "../geometry/matrix.hpp"
 #include "odometry.hpp"
+#include "../constants/constants.hpp"
 
 #include <cstdio>
 #include <cstdlib>
@@ -6,7 +8,7 @@
 #include <stdlib.h>
 
 int main(int argc, char *argv[]){
-    if(argc != 5) {
+    /*if(argc != 5) {
         std::cout << "Bad args\n";
     }
     Odometry angular(ANG_VEL);
@@ -18,6 +20,14 @@ int main(int argc, char *argv[]){
     angular.compute();
     Matrix* A = angular.getResults();
     std::cout << "Matrice A : "<<"\n"<<(*A)<<"\n";
-    //Odometry ticks(TICKS);
+    //Odometry ticks(TICKS);*/
+
+    double fwd[] = {100,100,100,100};
+
+    Matrix ticks(4,1,fwd);
+
+    Odometry test(3,4,dis_dir_kin_mat);
+    Matrix result = test << ticks;
+    std::cout << "culoo\n" << result << "\n";
 
 }

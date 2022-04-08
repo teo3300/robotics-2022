@@ -3,8 +3,6 @@
 
 #include "../geometry/matrix.hpp"
 
-#include <math.h>
-
 enum Method{EULER,RUNGE_KUTTA};
 
 
@@ -40,8 +38,10 @@ public:
     void dirKin(unsigned int h, unsigned int w, double mat[]);
     void inline setPos(double t[]) { this->state->fill(t); }
     void inline resetPos() { setPos(zeroPose); }
-    Matrix integrate(Matrix ticks);
-    Matrix operator<< (Matrix ticks);
+    Matrix integrate(Matrix speed);
+    Matrix operator<< (Matrix speed);
 };
+
+std::ostream& operator<<(std::ostream &strm, Integrator &mat);
 
 #endif//INTEGRATOR_HPP_

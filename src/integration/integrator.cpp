@@ -1,5 +1,7 @@
 #include "integrator.hpp"
 #include <cmath>
+#include <sstream>
+#include <string>
 
 double zeroPose[3] = {0,0,0};
 double set_base_int[9] = {0,0,0,0,0,0,0,0,1};
@@ -23,24 +25,24 @@ void Integrator::dirKin(unsigned int h, unsigned int w, double mat[]) {
     signals = w;
 }
 
-Matrix Integrator::integrate(Matrix ticks) {
+Matrix Integrator::integrate(Matrix speed) {
 
-    *speed = (*dir_k) * (ticks);
+    *this->speed = speed;
 
     setAngle();
 
-    (*state) = (*state) + (*base_int) * (*speed);
+    (*state) = (*state) + (*base_int) * (speed);
 
     return *state;
 }
 
-Matrix Integrator::operator<< (Matrix ticks) {
-    
-    *speed = (*dir_k) * (ticks);
+Matrix Integrator::operator<< (Matrix speed) {
+
+    *this->speed = speed;
 
     setAngle();
 
-    (*state) = (*state) + (*base_int) * (*speed);
+    (*state) = (*state) + (*base_int) * (speed);
 
     Matrix ret(*state);
 
@@ -58,4 +60,13 @@ void Integrator::setAngle() {
     base_int->set(0, 1, -vSin);
     base_int->set(1, 0,  vSin);
     base_int->set(1, 1,  vCos);
+}
+
+std::ostream& operator<<(std::ostream &strm, Integrator &intg) {
+    std::string buffer = "";
+    buffer += "state\tveolcity\n";
+    buffer += std::to_string(intg.getX()) + "\t" + std::to_string(intg.getVx()) + "\n";
+    buffer += std::to_string(intg.getY()) + "\t" + std::to_string(intg.getVy()) + "\n";
+    buffer += std::to_string(intg.getT()) + "\t" + std::to_string(intg.getW()) + "\n";
+    return strm << buffer;
 }

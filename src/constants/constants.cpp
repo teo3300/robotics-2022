@@ -20,9 +20,9 @@
 #define LW  (LENGTH+WIDTH)
 
 double dir_kin_mat[WHEELS * VARS] = {
-     DI,   DI,   DI,    DI,
-    -DI,   DI,   DI,   -DI,
-    -DI/L, DI/L, -DI/L,  DI/L
+    -DI,   DI,  -DI,    DI,
+     DI,   DI,  -DI,   -DI,
+     DI/L, DI/L, DI/L,  DI/L
 };
 
 double dis_dir_kin_mat[WHEELS * VARS] = {
