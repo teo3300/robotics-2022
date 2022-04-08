@@ -1,18 +1,18 @@
 #include "odometry.hpp"
-#include <cstdio>
-#include <cstdlib>
 
-Odometry::Odometry(Matrix* model){
-    this->model = model;
-    this->state = new Matrix(this->model->getWidth(),1);
-    this->result = new Matrix(this->model->getHeight(),1);
+
+Odometry::Odometry(Matrix kinematic) {
+    this->kinematic = new Matrix(kinematic);
 }
 
-Odometry::~Odometry(){
-    delete state;
+Odometry::~Odometry() {
     delete kinematic;
 }
 
-void Odometry::compute(){
-    (*this->result) = (*this->model) * (*this->state);
+Matrix Odometry::operator<< (Matrix input) {
+
+    Matrix speed(*kinematic * input);
+
+    return speed;
+
 }
