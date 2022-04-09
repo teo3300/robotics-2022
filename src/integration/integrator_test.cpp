@@ -11,7 +11,7 @@ double FWD[] = {-100,100,-100,100};
 double FR[] = {-90,110,-90,110};
 
 int main(){
-    Integrator I(EULER, PERIOD);
+    Integrator I(RUNGE_KUTTA, PERIOD);
 
     Odometry O(Matrix(3,4,dis_dir_kin_mat));
     

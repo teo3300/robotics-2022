@@ -20,7 +20,7 @@ Matrix::Matrix(const Matrix &src) : height(src.height), width(src.width){
 }
 
 Matrix::~Matrix(){
-    delete[] dat;
+    delete dat;
 }
 
 inline void Matrix::fill(double t[]){
