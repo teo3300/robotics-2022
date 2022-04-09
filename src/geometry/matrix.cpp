@@ -4,17 +4,18 @@
 #include <stdexcept>
 
 Matrix::Matrix(unsigned int height, unsigned int width)
-        : width(width), height(height){
+        : width(width), height(height) {
     dat = new double[width*height];
-};
+}
 
 Matrix::Matrix(unsigned int height, unsigned int width, double val[])
-        : Matrix(height, width){
+        : height(height), width(width) {
+    dat = new double[width*height];
     fill(val);
 }
 
-Matrix::Matrix(const Matrix &src)
-        : Matrix(src.height,src.width){
+Matrix::Matrix(const Matrix &src) : height(src.height), width(src.width){
+    dat = new double[height*width];
     fill(src.dat);
 }
 
@@ -23,16 +24,22 @@ Matrix::~Matrix(){
 }
 
 inline void Matrix::fill(double t[]){
-    memcpy(this->dat, t, width*height*sizeof(double));
+    memcpy(dat, t, width*height*sizeof(double));
 }
 
-Matrix Matrix::operator = (Matrix other) {
+Matrix Matrix::operator = (Matrix other) { // pass reference to object in a fancy way
+
+    if(this == &other) return *this;
+
     if(this->differ(other))
         throw std::invalid_argument("Assignment between different size matrix");
-    this->width = other.width;
-    this->height = other.height;
-    this->fill(other.dat);
-    return *this;
+
+    width = other.width;
+    height = other.height;
+    
+    fill(other.dat);
+
+    return *this;   // needed to concatenate assignment
 }
 
 Matrix Matrix::operator + (Matrix other) {
@@ -67,11 +74,13 @@ Matrix Matrix::operator * (Matrix other) {
     return tmp;
 }
 
-Matrix Matrix::operator * (double sca) const {
+Matrix Matrix::operator * (double sca) {
+
     Matrix tmp(this->height, this->width);
     for(int i=0; i<width*height; i++){
         tmp.dat[i] = dat[i]*sca;
     }
+
     return tmp;
 }
 

@@ -13,3 +13,7 @@ public:
     Matrix getSpeed();
     Matrix operator<< (Matrix input);
 };
+
+inline Matrix operator >> (Matrix speed, Odometry& odometry) {
+    return odometry << speed;
+}

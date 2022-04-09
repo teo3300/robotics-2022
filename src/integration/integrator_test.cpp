@@ -19,14 +19,15 @@ int main(){
     Matrix fwd(4,1,FWD);
     Matrix rot(4,1,ROT);
     Matrix fr(4,1,FR);
-    Matrix output(3,1);
     
-    output = I << (O << stand);
+    Matrix output(3,1);
+
+    output = stand >> O >> I;
     std::cout << "Stato nullo:\n" << output << "\n";
-    output = I << (O << rot);
+    output = rot >> O >> I;
     std::cout << "Stato rotazione:\n" << output << "\n";
-    output = I << (O << fwd);
+    output = fwd >> O >> I;
     std::cout << "Stato avanzamento:\n" << output << "\n";
-    output = I << (O << fr);
+    output = fr >> O >> I;
     std::cout << "Stato roto-avanzamento:\n" << output << "\n";
 }

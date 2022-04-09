@@ -20,9 +20,10 @@ class Matrix {
     }
 
 public:
+    Matrix();
+    Matrix(const Matrix &src);
     Matrix(unsigned int height, unsigned int width);
     Matrix(unsigned int height, unsigned int width, double val[]);
-    Matrix(Matrix const &src);
     ~Matrix();
 
     inline unsigned int getWidth() { return this->width; }
@@ -32,20 +33,17 @@ public:
     inline void set(unsigned int i, unsigned int j, double value){ dat[cmpt(i,j)] = value; }
     inline double sca(Matrix mat) { return get(0,0); }
     void fill(double t[]);
-    /*Matrix* sum(Matrix* a, Matrix* b);
-    Matrix* mul(Matrix* a, Matrix* b);
-    Matrix* mul(double sca, Matrix mat);
-    inline void mult(double sca) { mul(sca, *this); }*/
     Matrix operator = (Matrix other);
     Matrix operator + (Matrix other);
     Matrix operator * (Matrix other);
-    Matrix operator * (double sca) const;
+    Matrix operator * (double sca);
     Matrix operator ! ();
 };
 
-inline Matrix operator*(double sca, Matrix& mat){
+inline Matrix operator*(double sca, Matrix mat){
     return mat * sca;
 };
+
 std::ostream& operator<<(std::ostream &strm, Matrix &mat);
 
 #endif//MATRIX_HPP_

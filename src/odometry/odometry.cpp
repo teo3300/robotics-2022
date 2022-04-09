@@ -1,6 +1,4 @@
 #include "odometry.hpp"
-#include "geometry/matrix.hpp"
-
 
 Odometry::Odometry(Matrix kinematic) {
     speed = new Matrix(3,1);

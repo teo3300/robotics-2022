@@ -42,6 +42,10 @@ public:
     Matrix operator<< (Matrix speed);
 };
 
+inline Matrix operator>> (Matrix speed, Integrator& integrator) {
+    return integrator << speed;
+}
+
 std::ostream& operator<<(std::ostream &strm, Integrator &mat);
 
 #endif//INTEGRATOR_HPP_
