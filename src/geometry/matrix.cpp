@@ -27,6 +27,12 @@ inline void Matrix::fill(double t[]){
     memcpy(dat, t, width*height*sizeof(double));
 }
 
+double &Matrix::operator()(unsigned y, unsigned x) { return dat[cmpt(y, x)]; }
+
+const double &Matrix::operator()(unsigned i, unsigned j) const {
+  return dat[cmpt(i, j)];
+}
+
 Matrix Matrix::operator = (Matrix other) { // pass reference to object in a fancy way
 
     if(this == &other) return *this;
@@ -60,15 +66,15 @@ Matrix Matrix::operator * (Matrix other) {
         throw std::invalid_argument("Error in matrix moltiplication: Wrong matrix size");
     }
 
-    Matrix tmp(this->height,other.width);
+    Matrix tmp(height,other.width);
     double buffer;
-    for(int i=0; i<this->height; i++){
+    for(int i=0; i<height; i++){
         for(int j=0; j<other.width; j++){
             buffer = 0;
-            for(int t=0; t<this->width; t++){
-                buffer += this->get(i,t)*other.get(t, j); 
+            for(int t=0; t<width; t++){
+                buffer += get(i,t)*other(t, j); 
             }
-            tmp.set(i, j, buffer);
+            tmp(i,j) = buffer;
         }
     }
     return tmp;
@@ -89,7 +95,7 @@ Matrix Matrix::operator ! () {
     Matrix tmp(this->width, this->height);
     for(int i=0; i<height; i++){
         for(int j=0; j<width; j++){
-            tmp.set(j,i,get(i,j));
+            tmp(j,i) = get(i,j);
         }
     }
     return tmp;
@@ -99,7 +105,7 @@ std::ostream& operator<<(std::ostream &strm, Matrix &mat) {
     std::string buffer = "";
     for(int i=0; i<mat.getHeight(); i++){
         for(int j=0; j<mat.getWidth(); j++){
-            buffer += std::to_string(mat.get(i, j)) + " ";
+            buffer += std::to_string(mat(i, j)) + " ";
         }
         buffer += i==mat.getHeight()-1 ? "" : "\n";
     }

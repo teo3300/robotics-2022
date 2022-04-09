@@ -56,10 +56,10 @@ void Integrator::setAngle() {
     }
     double vCos = cos(vSin);
     vSin = sin(vSin);
-    base_int->set(0, 0,  vCos);
-    base_int->set(0, 1, -vSin);
-    base_int->set(1, 0,  vSin);
-    base_int->set(1, 1,  vCos);
+    (*base_int)(0, 0) = vCos;
+    (*base_int)(0, 1) = -vSin;
+    (*base_int)(1, 0) = vSin;
+    (*base_int)(1, 1) = vCos;
 }
 
 std::ostream& operator<<(std::ostream &strm, Integrator &intg) {

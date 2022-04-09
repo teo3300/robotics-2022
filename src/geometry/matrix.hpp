@@ -10,7 +10,7 @@ class Matrix {
     unsigned int width;
     double* dat;
 
-    inline unsigned int cmpt(unsigned int i, unsigned int j) { return j+i*width; }
+    inline unsigned int cmpt(unsigned int i, unsigned int j) const { return j+i*width; }
 
     inline int notMult(Matrix other) { return other.height - this->width;}
     inline int diffWidth(Matrix other) { return other.width - this->width; }
@@ -28,11 +28,16 @@ public:
 
     inline unsigned int getWidth() { return this->width; }
     inline unsigned int getHeight() { return this->height; }
-    inline double get(unsigned int i, unsigned int j) { return dat[cmpt(i, j)]; }
+    inline double get(unsigned int i, unsigned int j) { return (*this)(i,j); }
 
-    inline void set(unsigned int i, unsigned int j, double value){ dat[cmpt(i,j)] = value; }
-    inline double sca(Matrix mat) { return get(0,0); }
+    inline void set(unsigned int i, unsigned int j, double value){ (*this)(i,j) = value; }
+    inline double sca(Matrix mat) { return (*this)(0,0); }
     void fill(double t[]);
+
+    // I have no fucking Idea what I'm doing
+    double& operator()(unsigned y, unsigned x);
+    const double &operator()(unsigned y, unsigned x) const;
+
     Matrix operator = (Matrix other);
     Matrix operator + (Matrix other);
     Matrix operator * (Matrix other);
