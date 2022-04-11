@@ -6,7 +6,7 @@ $r =$ wheel radius\
 $\pm l =$ wheel position along $x$\
 $\pm w = $ wheel position along $y$\
 $T =$ gear ratio\
-$N =$ TPR
+$N =$ Ticks per revolution
 
 Robot specific parameters:
 Parameter | Value

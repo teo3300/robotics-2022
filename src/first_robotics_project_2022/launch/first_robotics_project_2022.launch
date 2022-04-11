@@ -1,0 +1,25 @@
+<!--
+    launchfile entry template:
+        surround content with <launch> tag
+
+    <node pkg="package_name" type=”node_type" name="node_name" [output="screen"] />
+    
+    specify: package name, executable, runtime name [optional: output mapping]
+
+    launch it with:
+        roslaunch package_name launch_file_name.launch
+    
+    it's also possible to regroup nodes using the tag:
+        <group ns="groupname">
+    
+    to remap node names, add inside the node body the tag:
+        <remap from="original_name" to="new_name"/>
+
+    finally it's possible to add attributes to the node-launching process using attribute
+        launch-prefix="launch_prefixes"
+    to the <node> tag to customize run
+
+-->
+<launch>
+
+</launch>

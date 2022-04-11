@@ -2,11 +2,9 @@
 
 set -e
 
-base="$HOME/git/robotics-2022"
-
 if [ ! -d "src" ]; then
 	echo "Making missing \"src\" folder..."
-	mkdir "$base/src"
+	mkdir "$1/src"
 fi
 
 echo "Making catkin environment..."
