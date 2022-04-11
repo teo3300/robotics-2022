@@ -14,13 +14,14 @@ Matrix::Matrix(unsigned int height, unsigned int width, double val[])
     fill(val);
 }
 
-Matrix::Matrix(const Matrix &src) : height(src.height), width(src.width){
+Matrix::Matrix(const Matrix &src)
+        : height(src.height), width(src.width){
     dat = new double[height*width];
     fill(src.dat);
 }
 
 Matrix::~Matrix(){
-    delete dat;
+    delete [] dat;
 }
 
 inline void Matrix::fill(double t[]){

@@ -1,19 +1,19 @@
-#include "../geometry/matrix.hpp"
+#ifndef ODOMETRY_HPP_
+#define ODOMETRY_HPP_
 
-#include <math.h>
+#include "../odometry/integrator.hpp"
+#include "../odometry/speed_calculator.hpp"
+#include "geometry/matrix.hpp"
 
 class Odometry {
-    Matrix* speed;
-    Matrix* kinematic;
-
+    Integrator* integrator;
+    SpeedCalculator* speedCalculator;
 public:
-    Odometry(Matrix kinematic);
+    Odometry(SpeedCalculator& speedCalculator, Integrator& integrator);
     ~Odometry();
-    void resetKinematic(Matrix newKinematic);
-    Matrix getSpeed();
-    Matrix operator<< (Matrix input);
+    inline Matrix getSpeed() { return speedCalculator->getSpeed(); }
+    inline Matrix getPosition() { return integrator->getPosition(); }
+    Matrix operator<< (Matrix inputs);
 };
 
-inline Matrix operator >> (Matrix speed, Odometry& odometry) {
-    return odometry << speed;
-}
+#endif//ODOMETRY_HPP_

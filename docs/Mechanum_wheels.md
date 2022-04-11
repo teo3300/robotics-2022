@@ -5,7 +5,8 @@ Variables notation:
 $r =$ wheel radius\
 $\pm l =$ wheel position along $x$\
 $\pm w = $ wheel position along $y$\
-$T =$ gear ratio
+$T =$ gear ratio\
+$N =$ TPR
 
 Robot specific parameters:
 Parameter | Value
@@ -117,6 +118,12 @@ v_y\\
 \omega_4
 \end{array}\right]
 $$
+
+---
+
+## RPM
+
+$[\omega] = \frac {rad} s \rightarrow \omega_{rpm} = \omega_{rad\over s}\frac{60}{2\pi} $
 
 ---
 

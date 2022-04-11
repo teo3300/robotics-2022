@@ -1,29 +1,14 @@
-#include "odometry.hpp"
 
-Odometry::Odometry(Matrix kinematic) {
-    speed = new Matrix(3,1);
-    this->kinematic = new Matrix(kinematic);
-}
+#include "../odometry/odometry.hpp"
 
-Odometry::~Odometry() {
-    delete speed;
-    delete kinematic;
-}
+Odometry::Odometry(SpeedCalculator& speedCalculator, Integrator& integrator)
+    : speedCalculator(&speedCalculator), integrator(&integrator){}
 
-void Odometry::resetKinematic(Matrix newKinematic){
-    delete kinematic; kinematic = new Matrix(newKinematic);
-}
+Odometry::~Odometry(){}
 
-Matrix Odometry::getSpeed() {
-    return Matrix(*speed);
-}
+Matrix Odometry::operator<< (Matrix inputs){
 
-Matrix Odometry::operator<< (Matrix input) {
-
-    *speed = *kinematic * input;
-
-    Matrix ret(*speed);
+    Matrix ret(inputs >> *speedCalculator >> *integrator);
 
     return ret;
-
 }

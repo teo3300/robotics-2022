@@ -12,7 +12,7 @@
 // TODO: get period definition
 #define PERIOD  1
 // TODO: get encoder ticks
-#define E_BITS  12
+#define T_ROUND 42
 
 // imported from math.c
 #define PI      3.14159265358979323846
@@ -21,17 +21,21 @@
 #define _1_PI 	0.318309886183790671538
 #define _2_PI 	(_1_PI * 2)
 
-#define T_ROUND (1<<E_BITS)
-#define A_TICK  (1*PI/T_ROUND)
+#ifdef E_BITS
+    #define T_ROUND (1<<E_BITS)
+#endif
 
 extern double dir_kin_mat[
-    WHEELS * VARS];
+    VARS * WHEELS];
+
+extern double rpm_dir_kin_mat[
+    VARS * WHEELS];
 
 extern double dis_dir_kin_mat[
-    WHEELS * VARS];
+    VARS * WHEELS];
 
 extern double inv_kin_mat[
-    VARS * WHEELS];
+    WHEELS * VARS];
 
 #define RUNGE_KUTTA_OFFSET (RADIUS*PI_2/(T_ROUND*(LENGTH+WIDTH)))
 

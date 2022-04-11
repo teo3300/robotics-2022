@@ -1,7 +1,7 @@
 #include "../constants/constants.hpp"
 #include "../geometry/matrix.hpp"
-#include "../integration/integrator.hpp"
-#include "../odometry/odometry.hpp"
+#include "../odometry/speed_calculator.hpp"
+#include "../odometry/integrator.hpp"
 
 #include <iostream> 
 
@@ -13,7 +13,7 @@ double FR[] = {-90,110,-90,110};
 int main(){
     Integrator I(RUNGE_KUTTA, PERIOD);
 
-    Odometry O(Matrix(3,4,dis_dir_kin_mat));
+    SpeedCalculator O(Matrix(3,4,dis_dir_kin_mat));
     
     Matrix stand(4,1,STAND);
     Matrix fwd(4,1,FWD);
