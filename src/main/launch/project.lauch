@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="rosbag" type="play" name="bag1_play" output="screen" args="--clock $(find main)/bags/bag1.bag"/>
+</launch>

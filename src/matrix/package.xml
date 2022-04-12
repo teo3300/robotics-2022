@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>first_robotics_project_2022</name>
+  <name>matrix</name>
   <version>0.0.0</version>
-  <description>The first_robotics_project_2022 package</description>
+  <description>The matrix package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="matteo.rogora@mail.polimi.it">Rogora Matteo</maintainer>
-  <maintainer email="davide.grazzani@mail.polimi.it">Grazzani Davide</maintainer>
+  <maintainer email="davide@todo.todo">davide</maintainer>
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->
@@ -20,7 +19,7 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/first_robotics_project_2022</url> -->
+  <!-- <url type="website">http://wiki.ros.org/matrix</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
