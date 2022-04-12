@@ -1,7 +1,7 @@
 #ifndef INTEGRATOR_HPP_
 #define INTEGRATOR_HPP_
 
-#include "../geometry/matrix.hpp"
+#include "../matrix/matrix.hpp"
 
 enum Method{EULER,RUNGE_KUTTA};
 

@@ -1,9 +1,9 @@
 #ifndef ODOMETRY_HPP_
 #define ODOMETRY_HPP_
 
-#include "../odometry/integrator.hpp"
-#include "../odometry/speed_calculator.hpp"
-#include "../geometry/matrix.hpp"
+#include "integrator.hpp"
+#include "speed_calculator.hpp"
+#include "../matrix/matrix.hpp"
 
 class Odometry {
     Integrator* integrator;

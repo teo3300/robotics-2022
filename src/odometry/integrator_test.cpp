@@ -1,7 +1,7 @@
-#include "../constants/constants.hpp"
-#include "../geometry/matrix.hpp"
-#include "../odometry/speed_calculator.hpp"
-#include "../odometry/integrator.hpp"
+#include "constants/constants.hpp"
+#include "matrix/matrix.hpp"
+#include "odometry/speed_calculator.hpp"
+#include "odometry/integrator.hpp"
 
 #include <iostream> 
 

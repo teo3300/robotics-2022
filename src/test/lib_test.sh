@@ -10,6 +10,7 @@ g++ -g -c -o ../odometry/integrator.{o,cpp}
 
 echo DONE
 
+FLAGS="-I../first_robotics_project_2022/src -L../first_robotics_project_2022/src"
 VAL_FLAGS="--error-exitcode=1 --quiet"
 
 echo Running tests...

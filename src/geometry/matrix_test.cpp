@@ -1,4 +1,4 @@
-#include "matrix.hpp"
+#include "matrix/matrix.hpp"
 #include <iostream>
 
 double testA[] = {
