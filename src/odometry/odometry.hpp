@@ -3,7 +3,7 @@
 
 #include "../odometry/integrator.hpp"
 #include "../odometry/speed_calculator.hpp"
-#include "geometry/matrix.hpp"
+#include "../geometry/matrix.hpp"
 
 class Odometry {
     Integrator* integrator;
