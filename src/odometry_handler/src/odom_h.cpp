@@ -5,15 +5,13 @@
 #include "sensor_msgs/JointState.h"
 
 //calculus dep
-#include "../../constants/constants.hpp"
-#include "../../odometry/odometry.hpp"
+#include "../../dep/constants/constants.hpp"
+#include "../../dep/odometry/odometry.hpp"
 #include <iostream>
 
 //debug variables
 int msg_number = 0;
-
-double* doub =dir_kin_mat;
-
+//include test
 void bagCallback(const sensor_msgs::JointState::ConstPtr& msg){
     //DEBUG
     msg_number++;

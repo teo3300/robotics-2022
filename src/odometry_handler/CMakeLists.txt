@@ -116,12 +116,12 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(include ${catkin_INCLUDE_DIRS} ../dep/*)
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/odometry_handler.cpp
-# )
+add_library(constants ../dep/constants/constants.cpp)
+add_library(matrix ../dep/matrix/matrix.cpp)
+add_library(odometry ../dep/odometry/integrator.cpp ../dep/odometry/speed_calculator.cpp ../dep/odometry/odometry.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -202,6 +202,9 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+#add_subdirectory(src/dependences)
 add_executable(odom_h src/odom_h.cpp)
+#add_library(constants src/dep/constants.cpp)
+
 add_dependencies(odom_h ${catkin_EXPORTED_TARGETS})
-target_link_libraries(odom_h ${catkin_LIBRARIES})
+target_link_libraries(odom_h ${catkin_LIBRARIES} constants matrix odometry)
