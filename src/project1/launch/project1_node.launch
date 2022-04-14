@@ -1,0 +1,5 @@
+<launch>
+    <arg name="bag_name" value="bag1"/>
+    <node pkg="rosbag" type="play" name="bag1_play" args="--clock $(find project1)/bags/$(arg bag_name).bag"/>
+    <node pkg="project1" type="project1_node" name="project1_test" output="screen"/> 
+</launch>
