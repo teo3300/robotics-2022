@@ -10,7 +10,7 @@
 #define RATIO   5.0
 
 // TODO: get encoder ticks
-#define T_ROUND 64
+#define T_ROUND 60
 
 // imported from math.c
 #define PI      3.14159265358979323846
@@ -23,18 +23,14 @@
     #define T_ROUND (1<<E_BITS)
 #endif
 
-extern double dir_kin_mat[
-    VARS * WHEELS];
+extern double dir_kin[VARS * WHEELS];
 
-extern double rpm_dir_kin_mat[
-    VARS * WHEELS];
+extern double round_min_dir_kin[VARS * WHEELS];
 
-extern double dis_dir_kin_mat[
-    VARS * WHEELS];
+extern double rad_min_dir_kin[VARS * WHEELS];
 
-extern double inv_kin_mat[
-    WHEELS * VARS];
+extern double dis_dir_kin[VARS * WHEELS];
 
-#define RUNGE_KUTTA_OFFSET (RADIUS*PI_2/(T_ROUND*(LENGTH+WIDTH)))
+extern double inv_kin[WHEELS * VARS];
 
 #endif//CONSTANTS_H_

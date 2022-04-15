@@ -53,3 +53,6 @@ CATKIN_IGNORE
 # generic object files
 src/*/*.o
 src/*/*.out
+
+# ignore vscode files
+.vscode/

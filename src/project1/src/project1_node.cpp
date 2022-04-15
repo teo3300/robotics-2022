@@ -14,23 +14,23 @@ Matrix t_input(4,1);
 Matrix t_prev_(4,1);
 
 // speedCompute
-SpeedCalculator a_speedCompute(Matrix(3, 4, rpm_dir_kin_mat), CONTINUE);
-SpeedCalculator t_speedCompute(Matrix(3, 4, dis_dir_kin_mat), DISCRETE);
+SpeedCalculator a_speedCompute(Matrix(3, 4, round_min_dir_kin), CONTINUE);
+SpeedCalculator t_speedCompute(Matrix(3, 4, dis_dir_kin), DISCRETE);
 
 // calculate speed with both angular velocity and ticks
 Matrix a_speed(3,1);
 Matrix t_speed(3,1);
 
 // integrate
-Integrator a_integrator(RUNGE_KUTTA);
-Integrator t_integrator(RUNGE_KUTTA);
+Integrator a_integrator(EULER);
+Integrator t_integrator(EULER);
 
 // matrices to store robot position
 Matrix a_position(3,1);
 Matrix t_position(3,1);
 
 void movCallBack(const sensor_msgs::JointState::ConstPtr& msg) {
-
+    
     // determine integration period
     double timeStamp = msg->header.stamp.toSec();
 
@@ -46,13 +46,13 @@ void movCallBack(const sensor_msgs::JointState::ConstPtr& msg) {
     std::cout << "wheels position is:\n" << t_input << "\n\n";
 
     // compute speed using both angular velocity and delta_ticks
-    a_speed = a_speedCompute /*timestamp not needed*/ << a_input;
+    a_speed = a_speedCompute                          << a_input;
     t_speed = t_speedCompute.setTimeStamp(timeStamp)  << (t_input - t_prev_);
 
     // print matrices content (also print module of the vector difference)
     std::cout << "speed given angular is:\n" << a_speed << "\n";
     std::cout << "speed given ticks is:\n" << t_speed << "\n";
-    std::cout << "|ERROR| is: " << ~(t_speed - a_speed) << "\n\n";
+    std::cout << "norm ERROR is: " << ~(t_speed - a_speed)/(((~t_speed)+(~a_speed))/2) << "\n\n";
 
     // integrate velocities
     a_position = a_integrator.setTimeStamp(timeStamp) << a_speed;
@@ -61,12 +61,11 @@ void movCallBack(const sensor_msgs::JointState::ConstPtr& msg) {
     // print matrices content (also print module of the vector difference)
     std::cout << "position given angular is:\n" << a_position << "\n";
     std::cout << "position given ticks is:\n" << t_position << "\n";
-    std::cout << "|ERROR| is: " << ~(t_position - a_position) << "\n";
+    std::cout << "norm ERROR is: " << ~(t_position - a_position)/(((~t_position)+(~a_position))/2) << "\n";
     std::cout << "===================================================\n";
 
     // switch to next step
     t_prev_ = t_input;
-
 }
 
 int main (int argc, char* argv[]) {
