@@ -46,7 +46,8 @@ qtcreator-*
 
 # Emacs
 .#*
-
+# Mac
+**/.DS_Store
 # Catkin custom files
 CATKIN_IGNORE
 
