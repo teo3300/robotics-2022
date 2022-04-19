@@ -31,6 +31,7 @@ class Integrator {
 public:
     // Runge kutta integration
     Integrator(Method method);
+    Integrator();
     ~Integrator();
 
     inline Integrator& setTimeStamp(double newStamp) {

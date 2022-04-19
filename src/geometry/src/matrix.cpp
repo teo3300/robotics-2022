@@ -21,6 +21,8 @@ Matrix::Matrix(const Matrix &src)
     fill(src.dat);
 }
 
+Matrix::Matrix() : Matrix(1,1) {};
+
 Matrix::~Matrix(){
     delete [] dat;
 }

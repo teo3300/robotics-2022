@@ -12,6 +12,8 @@ Integrator::Integrator(Method method)
     base_int = new Matrix(3,3,set_base_int);
 };
 
+Integrator::Integrator() : Integrator(EULER) {}
+
 Integrator::~Integrator(){
     delete state;
     delete base_int;
