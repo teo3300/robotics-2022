@@ -1,0 +1,6 @@
+<launch>
+    <arg name="bag_name" value="bag1"/>
+    <node pkg="rosbag" type="play" name="bag1_play" args="--clock $(find project1)/bags/$(arg bag_name).bag"/>
+    <node pkg="velocity" type="velocity_calculator" name="velocity_core" output="screen"/>
+    <node pkg="vel_debug" type="velocity_debug" name="velocity_test" output="screen"/> 
+</launch>
