@@ -1,6 +1,12 @@
+#include <iostream>
 #include <ros/ros.h>
 #include <geometry_msgs/TwistStamped.h>
 #include <nav_msgs/Odometry.h>
+#include "geometry_msgs/Quaternion.h"
+#include "geometry_msgs/TransformStamped.h"
+#include "tf/transform_broadcaster.h"
+#include "tf/transform_datatypes.h"
+
 #include "geometry/integrator.hpp"
 
 class IntegrationNode {
@@ -8,6 +14,7 @@ class IntegrationNode {
     ros::Subscriber vel;
     ros::Publisher pos;
     nav_msgs::Odometry output_pos;
+    tf::TransformBroadcaster odom_broadcaster;
     Matrix* velocity;
     Integrator* integrator;
 
@@ -27,8 +34,37 @@ class IntegrationNode {
         integrator->resetPosition(position);
     }
 
-    void dumpPosition() {
-        // TODO: convert Matrix position to nav_msgs::Odometry position
+    void dumpPosition(const geometry_msgs::TwistStamped::ConstPtr& msg) {
+        //getting the current position
+        Matrix position = integrator->getPosition();
+        //create a quaterion using angular velocity \theta
+        geometry_msgs::Quaternion odom_quaternion = tf::createQuaternionMsgFromYaw(position.get(2,0));
+        // creation tf message(see https://wiki.ros.org/navigation/Tutorials/RobotSetup/TF)
+        // penso potrebbe essere skippata nel nostro caso ma non ne sono sicuro
+        geometry_msgs::TransformStamped odom_tf_position;
+        odom_tf_position.header.stamp = msg->header.stamp;
+        odom_tf_position.header.frame_id = "odom";
+        odom_tf_position.child_frame_id = "base link";
+        odom_tf_position.transform.translation.x = position.get(0,0);
+        odom_tf_position.transform.translation.y = position.get(1,0);
+        odom_tf_position.transform.translation.z = 0;
+        odom_tf_position.transform.rotation = odom_quaternion;
+        //publishing tf message (internally)
+        odom_broadcaster.sendTransform(odom_tf_position);
+        //creation of odometry message
+        output_pos.header.stamp = msg->header.stamp;
+        output_pos.header.frame_id = "odom";
+        output_pos.pose.pose.position.x = position.get(0,0);
+        output_pos.pose.pose.position.y = position.get(1,0);
+        output_pos.pose.pose.position.z = 0;
+        output_pos.pose.pose.orientation = odom_quaternion;
+        output_pos.child_frame_id = "base link";
+        output_pos.twist.twist.linear.x = msg->twist.linear.x;
+        output_pos.twist.twist.linear.y = msg->twist.linear.y;
+        output_pos.twist.twist.linear.z = msg->twist.linear.z;
+        output_pos.twist.twist.angular.x = msg->twist.angular.x;
+        output_pos.twist.twist.angular.y = msg->twist.angular.y;
+        output_pos.twist.twist.angular.z = msg->twist.angular.z;
         pos.publish(output_pos);
     }
 
@@ -61,7 +97,11 @@ public:
         (*integrator) << (*velocity);
 
         // dump position Matrix into odom topic
-        dumpPosition();
+        dumpPosition(msg);
+
+        //DEBUG printing matrix state
+        Matrix m = integrator->getPosition();
+        std::cout << "Matrice posizione :\n"<<m<<"\n";
     }
 };
 

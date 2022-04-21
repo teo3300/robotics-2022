@@ -10,6 +10,9 @@ project(vel_debug)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   roscpp
+  tf
+  nav_msgs
+  geometry
 )
 
 ## System dependencies are found with CMake's conventions
@@ -202,3 +205,6 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 # catkin_add_nosetests(test)
 add_executable(velocity_debug src/velocity_debug.cpp)
 target_link_libraries(velocity_debug ${catkin_LIBRARIES})
+
+add_executable(integrator_debug src/integrator_debug.cpp)
+target_link_libraries(integrator_debug ${catkin_LIBRARIES})

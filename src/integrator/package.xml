@@ -64,8 +64,9 @@
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>velocity</exec_depend>
-
-
+  <exec_depend>tf</exec_depend>
+  <build_export_depend>tf</build_export_depend>
+  <build_depend>tf</build_depend>
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->
