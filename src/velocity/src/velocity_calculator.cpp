@@ -38,6 +38,9 @@ void bagMoveCallBack(const sensor_msgs::JointState::ConstPtr& msg){
     angular_vel_msg.twist.angular.x = 0;
     angular_vel_msg.twist.angular.y = 0;
     angular_vel_msg.twist.angular.z = angular_speed.get(2,0);
+    angular_vel_msg.header.stamp = msg->header.stamp;
+    angular_vel_msg.header.frame_id = msg->header.frame_id;
+    angular_vel_msg.header.seq = msg->header.seq;
     //generating tick message
     geometry_msgs::TwistStamped tick_vel_msg;
     tick_vel_msg.twist.linear.x = tick_speed.get(0,0);
@@ -46,6 +49,11 @@ void bagMoveCallBack(const sensor_msgs::JointState::ConstPtr& msg){
     tick_vel_msg.twist.angular.x = 0;
     tick_vel_msg.twist.angular.y = 0;
     tick_vel_msg.twist.angular.z = tick_speed.get(2,0);
+    // replicating header from /wheel_state topic to cmd_vel and angular_cmd_vel
+    tick_vel_msg.header.stamp = msg->header.stamp;
+    tick_vel_msg.header.frame_id = msg->header.frame_id;
+    tick_vel_msg.header.seq = msg->header.seq;
+
     //pushing messeges
     angular_vel.publish(angular_vel_msg);
     tick_vel.publish(tick_vel_msg);

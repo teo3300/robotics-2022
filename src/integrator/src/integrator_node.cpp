@@ -37,6 +37,7 @@ class IntegrationNode {
     void dumpPosition(const geometry_msgs::TwistStamped::ConstPtr& msg) {
         //getting the current position
         Matrix position = integrator->getPosition();
+        std::cout << "Position:\n" << position << std::endl << std::endl;
         //create a quaterion using angular velocity \theta
         geometry_msgs::Quaternion odom_quaternion = tf::createQuaternionMsgFromYaw(position.get(2,0));
         // creation tf message(see https://wiki.ros.org/navigation/Tutorials/RobotSetup/TF)
@@ -87,8 +88,10 @@ public:
 
     void integrationCallBack(const geometry_msgs::TwistStamped::ConstPtr& msg) {
         ROS_INFO("IntegratioNode handler got message");
+        std::cout << "Timestamp: " << msg->header.stamp.toSec();
         // load velocity data from cmd_vel topic message into velocity Matrix
         loadVelocity(msg);
+        std::cout << "Velocity:\n"<< (*velocity) << std::endl;
         
         // set next timeStamp for integrator (to determine integration period)
         integrator->setTimeStamp(msg->header.stamp.toSec());
@@ -98,10 +101,6 @@ public:
 
         // dump position Matrix into odom topic
         dumpPosition(msg);
-
-        //DEBUG printing matrix state
-        Matrix m = integrator->getPosition();
-        std::cout << "Matrice posizione :\n"<<m<<"\n";
     }
 };
 
