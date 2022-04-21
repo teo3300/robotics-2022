@@ -49,6 +49,9 @@ void bagMoveCallBack(const sensor_msgs::JointState::ConstPtr& msg){
     //pushing messeges
     angular_vel.publish(angular_vel_msg);
     tick_vel.publish(tick_vel_msg);
+
+    // update input values
+    old_tick_input = tick_input;
 }
 
 
