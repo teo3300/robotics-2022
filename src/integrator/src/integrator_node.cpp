@@ -65,7 +65,7 @@ class IntegrationNode {
         twist.angular.z = (*velocity)(2);
     }
 
-    void dumpPosition(const geometry_msgs::TwistStamped::ConstPtr& msg) {
+    void dumpOdom(const geometry_msgs::TwistStamped::ConstPtr& msg) {
 
         // define output message
         nav_msgs::Odometry output_position;
@@ -81,16 +81,14 @@ class IntegrationNode {
         dumpTwist(output_position.twist.twist);
 
         pos.publish(output_position);
-
-        std::cout << "Output position:\n" << output_position.pose.pose << std::endl;
-        std::cout << "Output twist:\n" << output_position.twist.twist << std::endl << std::endl;
     }
 
 public:
     IntegrationNode() {
 
         // setup topic comunications
-        vel = n.subscribe("cmd_vel", 1000, &IntegrationNode::integrationCallBack, this);
+        // TODO: move from "cmd_vel" to "angular_cmd_vel"
+        vel = n.subscribe("angular_cmd_vel", 1000, &IntegrationNode::integrationCallBack, this);
         pos = n.advertise<nav_msgs::Odometry>("odom", 1000);
 
         // setup working classes
@@ -115,7 +113,9 @@ public:
         (*integrator) << (*velocity);
 
         // dump position Matrix into odom topic
-        dumpPosition(msg);
+        dumpOdom(msg);
+
+        Matrix position = integrator->getPosition();
     }
 };
 

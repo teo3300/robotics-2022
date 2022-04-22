@@ -1,68 +1,44 @@
 #include "proj_const/constants.hpp"
 
-#define CONST_MAT true
+#include <string>
 
-#ifndef CONST_MAT
-#define CONST_MAT trure
-#endif
+Parameters robot_parameters;
 
-#if CONST_MAT
-    // direct kinematic using radiant/sec as input
-    #define DI (RATIO*(RADIUS/4))
-    
-    // direct kinematic using rpm as input
-    #define DR (RATIO*(DI * (2 * PI) / 60))
-
-    // direct kinematic using radiant/min
-    #define DM (RATIO*(DI / 60))
-
-    // discrete direct matrix requires knowing time period to determine correct scalar
-    #define DD (RATIO*(DI * 2 * PI / T_ROUND))
-
-    // inverse kinematic using wheel angular velocity is defined as
-    #define IN (RATIO*(1/RADIUS))
-
-#else
-    #define DI  1
-    #define DR  1
-    #define IN  1
-    #define DD  1
-#endif
-
-#define L   (LENGTH+WIDTH)
-#define LW  (LENGTH+WIDTH)
-
-double dir_kin[WHEELS * VARS] = {
-     DI,    DI,    DI,    DI,
-    -DI,    DI,    DI,   -DI,
-    -DI/L,  DI/L, -DI/L,  DI/L
+const double dir_kin_template[WHEELS * VARS] = {
+     1,   1,   1,   1,
+    -1,   1,   1,  -1,
+    -1,   1,  -1,   1
 };
 
-double round_min_dir_kin[WHEELS * VARS] = {
-     DR,    DR,    DR,    DR,
-    -DR,    DR,    DR,   -DR,
-    -DR/L,  DR/L, -DR/L,  DR/L
+const double inv_kin[VARS * WHEELS] = {
+    1,  -1,  -1,
+    1,   1,   1,
+    1,   1,  -1,
+    1,  -1,   1
 };
 
-double rad_min_dir_kin[WHEELS * VARS] = {
-     DM,    DM,    DM,    DM,
-    -DM,    DM,    DM,   -DM,
-    -DM/L,  DM/L, -DM/L,  DM/L
-};
+bool load_parameters(int argc, char* argv[]) {
 
-double dis_dir_kin[WHEELS * VARS] = {
-     DD,    DD,    DD,    DD,
-    -DD,    DD,    DD,   -DD,
-    -DD/L,  DD/L, -DD/L,  DD/L
-};
+    // always pass 4 values, 0.0 to keep previous
+    if(argc < SETTABLE+1) return false;
 
-double inv_kin[VARS * WHEELS] = {
-     IN, -IN, -IN*LW,
-     IN,  IN,  IN*LW,
-     IN,  IN, -IN*LW,
-     IN, -IN,  IN*LW
-};
+    // set specified arguments
+    for(int i=0; i<SETTABLE; i++){
+        robot_parameters.list[i] = std::stod(argv[i+1]);
+    }
 
-#undef DI
-#undef IN
-#undef DD
+    return true;
+}
+
+void generateDirectKinematic(double* mem, double scalar) {
+    for(int i=0; i<WHEELS*VARS; i++) {
+        mem[i] = dir_kin_template[i]*scalar;
+        if(i >= WHEELS * (VARS-1)) mem[i] = mem[i] / L;
+    }
+}
+void generateInverseKinematic(double* mem, double scalar) {
+    for(int i=0; i<WHEELS*VARS; i++) {
+        mem[i] = dir_kin_template[i]*scalar;
+        if(!((i+1) % VARS)) mem[i] = mem[i] / L;
+    }
+}

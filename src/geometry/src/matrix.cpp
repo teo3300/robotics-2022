@@ -67,9 +67,9 @@ Matrix Matrix::operator + (Matrix other) {
         throw std::invalid_argument("Error in matrix sum: different size");
     }
 
-    Matrix tmp(this->height,this->width);
-    for(int i=0; i<this->width*height; i++){
-        tmp.dat[i] = this->dat[i]+other.dat[i];
+    Matrix tmp(height, width);
+    for(int i=0; i<width*height; i++){
+        tmp.dat[i] = dat[i]+other.dat[i];
     }
 
     return tmp;
@@ -91,7 +91,7 @@ Matrix Matrix::operator * (Matrix other) {
         for(int j=0; j<other.width; j++){
             buffer = 0;
             for(int t=0; t<width; t++){
-                buffer += get(i,t)*other(t, j); 
+                buffer += (*this)(i,t)*other(t, j); 
             }
             tmp(i,j) = buffer;
         }

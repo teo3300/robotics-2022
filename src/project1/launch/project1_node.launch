@@ -1,12 +1,19 @@
 <launch>
-    <arg name="bag_name" value="bag1"/>
+    <arg name="bag_name"     value="bag1"/>
+
+    <arg name="wheel_radius" value="0.07"/>
+    <arg name="robot_length" value="0.2"/>
+    <arg name="robot_width"  value="0.169"/>
+    <arg name="cpr"          value="60.0"/>
+    <arg name="gear_ratio"   value="5.0"/>
+
     <node pkg="rosbag" type="play" name="bag1_play" args="--clock $(find project1)/bags/$(arg bag_name).bag"/>
     
-    <node pkg="velocity" type="velocity_calculator" name="velocity_calculator"/>
+    <node pkg="velocity" type="velocity_calculator" name="velocity_calculator" args="$(arg wheel_radius) $(arg robot_length) $(arg robot_width) $(arg cpr) $(arg gear_ratio)" output="screen"/>
 
-    <node pkg="integrator" type="integrator_node" name="integrator_node"/>
+    <node pkg="integrator" type="integrator_node" name="integrator_node" output="screen"/>
 
-    <node pkg="tf_broadcaster" type="tf_broadcaster_node" name="tf_broadcaster_node" output="screen"/>
+    <node pkg="tf_broadcaster" type="tf_broadcaster_node" name="tf_broadcaster_node"/>
 
     <node pkg="rviz" type="rviz" name="rviz_robot_pos" args="-d $(find project1)/launch/robot_odom.rviz"/>
 

@@ -17,8 +17,11 @@ Matrix old_tick_input(4,1,clean);
 Matrix angular_speed(3,1);
 Matrix tick_speed(3,1);
 //calculators
-SpeedCalculator angular_calc(Matrix(3,4,round_min_dir_kin),CONTINUE);
-SpeedCalculator tick_calc(Matrix(3,4,dis_dir_kin),DISCRETE);
+
+double kinematic[WHEELS * VARS];
+
+SpeedCalculator angular_calc(CONTINUE);
+SpeedCalculator tick_calc(DISCRETE);
 //topics
 ros::Publisher angular_vel;
 ros::Publisher tick_vel;
@@ -70,6 +73,15 @@ void bagMoveCallBack(const sensor_msgs::JointState::ConstPtr& msg){
 
 
 int main(int argc,char *argv[]){
+
+    if(!load_parameters(argc, argv)) {
+        return 1;
+    }
+
+    generateDirectKinematic(kinematic, DIRECT_RADIANT_MIN_SCA);
+    angular_calc.setKinematic(Matrix(3,4,kinematic));
+    generateDirectKinematic(kinematic, DIRECT_DISCRETE_SCA);
+    tick_calc.setKinematic(Matrix(3,4,kinematic));
 
     ros::init(argc, argv, "velocity_node");
     

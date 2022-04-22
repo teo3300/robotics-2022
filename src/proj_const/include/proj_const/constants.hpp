@@ -1,17 +1,6 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
-#define WHEELS  4
-#define VARS    3
-
-#define RADIUS  0.07
-#define LENGTH  0.2
-#define WIDTH   0.169
-#define RATIO   5.0
-
-// TODO: get encoder ticks
-#define T_ROUND 42
-
 // imported from math.c
 #define PI      3.14159265358979323846
 #define PI_2 	(PI / 2)
@@ -19,18 +8,41 @@
 #define _1_PI 	0.318309886183790671538
 #define _2_PI 	(_1_PI * 2)
 
-#ifdef E_BITS
-    #define T_ROUND (1<<E_BITS)
-#endif
+#define SETTABLE    5
+#define WHEELS      4
+#define VARS        3
 
-extern double dir_kin[VARS * WHEELS];
+typedef union {
+    double list[SETTABLE];
+    struct {
+        double
+            wheel_radius,
+            robot_length,
+            robot_width,
+            robot_cpr,
+            gear_ratio;
+    } nominal;
+} Parameters;
 
-extern double round_min_dir_kin[VARS * WHEELS];
+extern Parameters robot_parameters;
 
-extern double rad_min_dir_kin[VARS * WHEELS];
+#define RADIUS (robot_parameters.nominal.wheel_radius)
+#define LENGTH (robot_parameters.nominal.robot_length)
+#define WIDTH  (robot_parameters.nominal.robot_width)
+#define CPR    (robot_parameters.nominal.robot_cpr)
+#define RATIO  (robot_parameters.nominal.gear_ratio)
 
-extern double dis_dir_kin[VARS * WHEELS];
+#define L      (LENGTH + WIDTH)
 
-extern double inv_kin[WHEELS * VARS];
+#define DIRECT_RADIANT_SEC_SCA  (RATIO*RADIUS/4)
+#define DIRECT_RADIANT_MIN_SCA  ((DIRECT_RADIANT_SEC_SCA / 60))
+#define DIRECT_ROUND_MIN_SCA    ((DIRECT_RADIANT_SEC_SCA * (2 * PI) / 60))
+#define DIRECT_DISCRETE_SCA     ((DIRECT_RADIANT_SEC_SCA * 2 * PI / CPR))
+#define INVERSE_SCA             ((1/RADIUS))
+
+bool load_parameters(int argc, char* argv[]);
+
+void generateDirectKinematic(double* mem, double scalar);
+void generateInverseKinematic(double* mem, double scalar);
 
 #endif//CONSTANTS_H_

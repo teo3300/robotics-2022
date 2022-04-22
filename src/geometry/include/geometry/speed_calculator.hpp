@@ -14,10 +14,12 @@ class SpeedCalculator {
     inline double getDt() { return currStamp - prevStamp; }
 
 public:
-    SpeedCalculator(Matrix kinematic, ComputeType computeType);
+    SpeedCalculator(ComputeType computeType);
     ~SpeedCalculator();
     
     inline Matrix getSpeed() { return Matrix(*speed); }
+
+    void setKinematic (Matrix kinematic);
 
     // needed since working with discrete values
     inline SpeedCalculator& setTimeStamp(double newStamp) {
