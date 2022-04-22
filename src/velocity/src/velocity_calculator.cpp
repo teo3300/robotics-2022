@@ -32,24 +32,30 @@ void bagMoveCallBack(const sensor_msgs::JointState::ConstPtr& msg){
     tick_speed = tick_calc.setTimeStamp(msg->header.stamp.toSec())<< (tick_input - old_tick_input);
     //generating angular message
     geometry_msgs::TwistStamped angular_vel_msg;
-    angular_vel_msg.twist.linear.x = angular_speed.get(0, 0);
-    angular_vel_msg.twist.linear.y = angular_speed.get(1,0);
+    angular_vel_msg.twist.linear.x = angular_speed(0);
+    angular_vel_msg.twist.linear.y = angular_speed(1);
     angular_vel_msg.twist.linear.z = 0;
     angular_vel_msg.twist.angular.x = 0;
     angular_vel_msg.twist.angular.y = 0;
-    angular_vel_msg.twist.angular.z = angular_speed.get(2,0);
+    angular_vel_msg.twist.angular.z = angular_speed(2);
     angular_vel_msg.header.stamp = msg->header.stamp;
     angular_vel_msg.header.frame_id = msg->header.frame_id;
     angular_vel_msg.header.seq = msg->header.seq;
     //generating tick message
     geometry_msgs::TwistStamped tick_vel_msg;
-    tick_vel_msg.twist.linear.x = tick_speed.get(0,0);
-    tick_vel_msg.twist.linear.y = tick_speed.get(1,0);
+    tick_vel_msg.twist.linear.x = tick_speed(0);
+    tick_vel_msg.twist.linear.y = tick_speed(1);
     tick_vel_msg.twist.linear.z = 0;
     tick_vel_msg.twist.angular.x = 0;
     tick_vel_msg.twist.angular.y = 0;
-    tick_vel_msg.twist.angular.z = tick_speed.get(2,0);
-    // replicating header from /wheel_state topic to cmd_vel and angular_cmd_vel
+    tick_vel_msg.twist.angular.z = tick_speed(2);
+
+    // replicating header from /wheel_state topic to angular_cmd_vel
+    angular_vel_msg.header.stamp = msg->header.stamp;
+    angular_vel_msg.header.frame_id = msg->header.frame_id;
+    angular_vel_msg.header.seq = msg->header.seq;
+    
+    // replicating header from /wheel_state topic to cmd_vel
     tick_vel_msg.header.stamp = msg->header.stamp;
     tick_vel_msg.header.frame_id = msg->header.frame_id;
     tick_vel_msg.header.seq = msg->header.seq;

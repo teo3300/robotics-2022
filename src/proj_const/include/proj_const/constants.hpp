@@ -10,7 +10,7 @@
 #define RATIO   5.0
 
 // TODO: get encoder ticks
-#define T_ROUND 60
+#define T_ROUND 42
 
 // imported from math.c
 #define PI      3.14159265358979323846

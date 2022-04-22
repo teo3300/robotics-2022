@@ -8,19 +8,19 @@
 
 #if CONST_MAT
     // direct kinematic using radiant/sec as input
-    #define DI (RADIUS/4)
+    #define DI (RATIO*(RADIUS/4))
     
     // direct kinematic using rpm as input
-    #define DR (DI * (2 * PI) / 60)
+    #define DR (RATIO*(DI * (2 * PI) / 60))
 
     // direct kinematic using radiant/min
-    #define DM (DI / 60)
+    #define DM (RATIO*(DI / 60))
 
     // discrete direct matrix requires knowing time period to determine correct scalar
-    #define DD (DI * 2 * PI / T_ROUND)
+    #define DD (RATIO*(DI * 2 * PI / T_ROUND))
 
     // inverse kinematic using wheel angular velocity is defined as
-    #define IN (1/RADIUS)
+    #define IN (RATIO*(1/RADIUS))
 
 #else
     #define DI  1

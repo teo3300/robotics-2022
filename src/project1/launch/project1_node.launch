@@ -4,8 +4,11 @@
     
     <node pkg="velocity" type="velocity_calculator" name="velocity_calculator"/>
 
-    <!-- test integrator, should not print other things except for setup if velocity node is not running -->
-    <node pkg="integrator" type="integrator_node" name="integrator_node" output="screen"/>
+    <node pkg="integrator" type="integrator_node" name="integrator_node"/>
+
+    <node pkg="tf_broadcaster" type="tf_broadcaster_node" name="tf_broadcaster_node" output="screen"/>
+
+    <node pkg="rviz" type="rviz" name="rviz_robot_pos" args="-d $(find project1)/launch/robot_odom.rviz"/>
 
     <!-- the purpose of this node is to compare output position based on both RPM and tick, to determine the correct N (number of ticks in a full revolution) -->
     <!-- node pkg="project1" type="vel-tick_test_node" name="vel-tick_test_node" output="screen"/> -->

@@ -31,10 +31,20 @@ inline void Matrix::fill(const double t[]){
     memcpy(dat, t, width*height*sizeof(double));
 }
 
-double &Matrix::operator()(unsigned y, unsigned x) { return dat[cmpt(y, x)]; }
+double &Matrix::operator()(unsigned i) {
+    return dat[i];
+}
+
+const double &Matrix::operator()(unsigned i) const {
+    return dat[i];
+}
+
+double &Matrix::operator()(unsigned i, unsigned j) {
+    return (*this)(i*width+j);
+}
 
 const double &Matrix::operator()(unsigned i, unsigned j) const {
-  return dat[cmpt(i, j)];
+    return (*this)(i*width+j);
 }
 
 Matrix Matrix::operator = (Matrix other) { // pass reference to object in a fancy way

@@ -35,8 +35,11 @@ public:
     void fill(const double t[]);
 
     // I have no fucking Idea what I'm doing
-    double& operator()(unsigned y, unsigned x);
-    const double &operator()(unsigned y, unsigned x) const;
+    double& operator()(unsigned i);
+    const double &operator()(unsigned i) const;
+
+    double& operator()(unsigned i, unsigned j);
+    const double &operator()(unsigned i, unsigned j) const;
 
     Matrix operator = (Matrix other);
     Matrix operator + (Matrix other);
