@@ -88,12 +88,12 @@ public:
 
         // setup topic comunications
         // TODO: move from "cmd_vel" to "angular_cmd_vel"
-        vel = n.subscribe("angular_cmd_vel", 1000, &IntegrationNode::integrationCallBack, this);
+        vel = n.subscribe("cmd_vel", 1000, &IntegrationNode::integrationCallBack, this);
         pos = n.advertise<nav_msgs::Odometry>("odom", 1000);
 
         // setup working classes
         velocity = new Matrix(3,1);
-        integrator = new Integrator(EULER);
+        integrator = new Integrator(RUNGE_KUTTA);
     }
     ~IntegrationNode() { delete velocity; delete integrator; }
 
