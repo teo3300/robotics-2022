@@ -14,11 +14,18 @@
 
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
+#include <tf2_ros/transform_broadcaster.h>
+#include <geometry_msgs/TransformStamped.h>
+
 class IntegrationNode {
     // ROS communications handling
     ros::NodeHandle n;
     ros::Subscriber vel;
+    ros::Subscriber initial_pos;
     ros::Publisher pos;
+
+    tf2_ros::TransformBroadcaster br;
+    geometry_msgs::TransformStamped transformStamped;
     
     // Math structure
     Matrix* velocity;
@@ -32,27 +39,31 @@ class IntegrationNode {
         (*velocity)(2) = msg->twist.angular.z;
     }
 
-    void getInitialPos() {
-        // if setup server is on set position
-        Matrix position(3,1);
-        if(!n.getParam("inital/position/x", position(0))) position(0) = 0;
-        if(!n.getParam("inital/position/y", position(1))) position(1) = 0;
-        if(!n.getParam("inital/position/t", position(2))) position(2) = 0;
-        integrator->resetPosition(position);
-    }
-
     void dumpPosition(geometry_msgs::Pose& pose) {
 
         // set Point position
         Matrix position = integrator->getPosition();
         pose.position.x = position(0);
         pose.position.y = position(1);
-        pose.position.z = 0;
+        pose.position.z = 0.0;
 
         // set Quaternion rotation
         tf2::Quaternion rotation_quaternion;
-        rotation_quaternion.setRPY(0,0,position(2));
+        rotation_quaternion.setRPY(0, 0, position(2));
+        rotation_quaternion.normalize();
         pose.orientation = tf2::toMsg(rotation_quaternion);
+
+        transformStamped.transform.translation.x= position(0);
+        transformStamped.transform.translation.y= position(1);
+        transformStamped.transform.translation.z= 0.0;
+
+        transformStamped.transform.rotation.x= rotation_quaternion.x();
+        transformStamped.transform.rotation.y= rotation_quaternion.y();
+        transformStamped.transform.rotation.z= rotation_quaternion.z();
+        transformStamped.transform.rotation.w= rotation_quaternion.w();
+
+        br.sendTransform(transformStamped);
+
     }
 
     void dumpTwist(geometry_msgs::Twist& twist) {
@@ -73,8 +84,14 @@ class IntegrationNode {
         // construct output msg header
         output_position.header.seq = msg->header.seq;
         output_position.header.stamp = msg->header.stamp;
-        output_position.header.frame_id = msg->header.frame_id;
+        output_position.header.frame_id = "world";
         output_position.child_frame_id = msg->header.frame_id;
+
+        // construct transfromStamped
+        transformStamped.header.seq = msg->header.seq;
+        transformStamped.header.stamp = msg->header.stamp;
+        transformStamped.header.frame_id = "world";
+        transformStamped.child_frame_id= msg->header.frame_id;
 
         // construct twist
         dumpPosition(output_position.pose.pose);
@@ -89,6 +106,7 @@ public:
         // setup topic comunications
         // TODO: move from "cmd_vel" to "angular_cmd_vel"
         vel = n.subscribe("cmd_vel", 1000, &IntegrationNode::integrationCallBack, this);
+        initial_pos = n.subscribe("/robot/pose", 1000, &IntegrationNode::positionCallBack, this);
         pos = n.advertise<nav_msgs::Odometry>("odom", 1000);
 
         // setup working classes
@@ -117,6 +135,33 @@ public:
 
         Matrix position = integrator->getPosition();
     }
+
+    void positionCallBack(const geometry_msgs::PoseStamped::ConstPtr& msg) {
+        
+        // set initial position
+        Matrix position(3,1);
+        position(0) = msg->pose.position.x;
+        position(1) = msg->pose.position.y;
+
+        // set initial orientation
+        tf2::Quaternion q(
+            msg->pose.orientation.x,
+            msg->pose.orientation.y,
+            msg->pose.orientation.z,
+            msg->pose.orientation.w);
+        q.normalize();
+        tf2::Matrix3x3 m(q);
+        double roll, pitch, yaw;
+        m.getRPY(roll, pitch, yaw);
+        position(2) = yaw;
+
+        // dump position to integrator
+        integrator->resetPosition(position);
+
+        // shutdown to release resources
+        initial_pos.shutdown();
+    }
+
 };
 
 int main(int argc, char* argv[]) {

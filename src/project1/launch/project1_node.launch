@@ -13,7 +13,7 @@
 
     <node pkg="integrator" type="integrator_node" name="integrator_node"/>
 
-    <node pkg="tf_broadcaster" type="tf_broadcaster_node" name="tf_broadcaster_node"/>
+    <!-- <node pkg="tf_broadcaster" type="tf_broadcaster_node" name="tf_broadcaster_node"/> -->
 
     <node pkg="rviz" type="rviz" name="rviz_robot_pos" args="-d $(find project1)/launch/robot_odom.rviz"/>
 
