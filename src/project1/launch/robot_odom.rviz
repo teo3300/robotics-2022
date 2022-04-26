@@ -7,8 +7,6 @@ Panels:
         - /Global Options1
         - /Status1
         - /Odometry1
-        - /Odometry1/Shape1
-        - /Odometry1/Covariance1
         - /Odometry1/Covariance1/Position1
         - /Odometry1/Covariance1/Orientation1
         - /Pose1
@@ -90,7 +88,7 @@ Visualization Manager:
         Shaft Length: 1
         Shaft Radius: 0.05000000074505806
         Value: Axes
-      Topic: /odom
+      Topic: odom
       Unreliable: false
       Value: true
     - Alpha: 1
@@ -137,7 +135,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 13.90846061706543
+      Distance: 12.565620422363281
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -145,17 +143,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 1.0952104330062866
-        Y: -1.1504424810409546
-        Z: 0.039054833352565765
+        X: -1.3608574867248535
+        Y: -0.15149657428264618
+        Z: -1.2126128673553467
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5697963237762451
+      Pitch: 1.4747964143753052
       Target Frame: <Fixed Frame>
-      Yaw: 2.285398483276367
+      Yaw: 2.815424919128418
     Saved: ~
 Window Geometry:
   Displays:

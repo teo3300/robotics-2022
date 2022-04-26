@@ -61,9 +61,6 @@ class IntegrationNode {
         transformStamped.transform.rotation.y= rotation_quaternion.y();
         transformStamped.transform.rotation.z= rotation_quaternion.z();
         transformStamped.transform.rotation.w= rotation_quaternion.w();
-
-        br.sendTransform(transformStamped);
-
     }
 
     void dumpTwist(geometry_msgs::Twist& twist) {
@@ -93,11 +90,17 @@ class IntegrationNode {
         transformStamped.header.frame_id = "world";
         transformStamped.child_frame_id= msg->header.frame_id;
 
-        // construct twist
+        // construct position for odom and transformStamped
         dumpPosition(output_position.pose.pose);
+
+        // construct twist
         dumpTwist(output_position.twist.twist);
 
+        // publish position to odom
         pos.publish(output_position);
+
+        // publish position as tf broadcast
+        br.sendTransform(transformStamped);
     }
 
 public:
