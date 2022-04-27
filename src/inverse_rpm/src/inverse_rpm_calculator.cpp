@@ -4,7 +4,7 @@
 #include "nav_msgs/Odometry.h"
 
 #include "geometry/odometry.hpp"
-#include "../../proj_const/include/proj_const/constants.hpp"
+#include "proj_const/constants.hpp"
 #include "inverse_rpm/Wheels_Rpm.h"
 
 Matrix inverse_matrix(4,3);
