@@ -22,6 +22,11 @@ void inverseKinCallBack(const nav_msgs::Odometry::ConstPtr& msg){
     //performing inverse computation
     result = inverse_matrix * pose;
     inverse_rpm::Wheels_Rpm wheel_msg;
+
+    //generating message header
+    wheel_msg.header.stamp = msg->header.stamp;
+    wheel_msg.header.frame_id = msg->header.frame_id;
+
     //genererating and sending msg
     wheel_msg.rpm_fl=result.get(0,0);
     wheel_msg.rpm_fr=result.get(1,0);
