@@ -39,6 +39,9 @@ public:
         currStamp = newStamp;
         return *this;
     }
+
+    void setMethod(Method method) { this->method = method; }
+
     inline void resetPosition(Matrix position) { *state = position; }
     inline Matrix getPosition() { return Matrix(*state); }
 
