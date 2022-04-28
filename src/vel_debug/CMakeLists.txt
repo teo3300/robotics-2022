@@ -13,6 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   nav_msgs
   geometry
+  geometry_msgs
+  inverse_rpm
 )
 
 ## System dependencies are found with CMake's conventions
@@ -208,3 +210,6 @@ target_link_libraries(velocity_debug ${catkin_LIBRARIES})
 
 add_executable(integrator_debug src/integrator_debug.cpp)
 target_link_libraries(integrator_debug ${catkin_LIBRARIES})
+
+add_executable(inverse_kin_debug src/inverse_kin_debug.cpp)
+target_link_libraries(inverse_kin_debug ${catkin_LIBRARIES})

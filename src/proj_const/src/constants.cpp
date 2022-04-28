@@ -1,5 +1,5 @@
 #include "proj_const/constants.hpp"
-
+#include <iostream>
 #include <string>
 
 Parameters robot_parameters;
@@ -38,7 +38,7 @@ void generateDirectKinematic(double* mem, double scalar) {
 }
 void generateInverseKinematic(double* mem, double scalar) {
     for(int i=0; i<WHEELS*VARS; i++) {
-        mem[i] = dir_kin_template[i]*scalar;
+        mem[i] = inv_kin[i]*scalar;
         if(!((i+1) % VARS)) mem[i] = mem[i] / L;
     }
 }
