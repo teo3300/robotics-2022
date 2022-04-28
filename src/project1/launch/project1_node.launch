@@ -16,7 +16,7 @@
 
     <node pkg="position_setter" type="position_setter_node" name="position_setter_node" output="screen"/>
 
-    <node pkg="inverse_rpm" type="inverse_kin" name="inverse_kin_calculator" output="screen"/>
+    <node pkg="inverse_rpm" type="inverse_kin" name="inverse_kin_calculator" args="$(arg wheel_radius) $(arg robot_length) $(arg robot_width) $(arg cpr) $(arg gear_ratio)" output="screen"/>
 
     <!--<node pkg="vel_debug" type="inverse_kin_debug" name="inverse_kin_debug" output="screen"/> -->
 
