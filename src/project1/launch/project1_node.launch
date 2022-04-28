@@ -12,10 +12,10 @@
     
     <node pkg="velocity" type="velocity_calculator" name="velocity_calculator" args="$(arg wheel_radius) $(arg robot_length) $(arg robot_width) $(arg cpr) $(arg gear_ratio)" output="screen"/>
 
-    <node pkg="integrator" type="integrator_node" name="integrator_node"/>
+    <node pkg="integrator" type="integrator_node" name="integrator_node" output="screen"/>
 
-    <node pkg="position_setter" type="position_setter_node" name="position_setter_node"/>
+    <node pkg="position_setter" type="position_setter_node" name="position_setter_node" output="screen"/>
 
-    <node pkg="rviz" type="rviz" name="rviz_robot_pos" args="-f world -d $(find project1)/launch/robot_odom.rviz"/>
+    <node pkg="rviz" type="rviz" name="rviz_robot_pos" args="-d $(find project1)/launch/robot_odom.rviz"/>
 
 </launch>

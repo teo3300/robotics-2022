@@ -11,6 +11,8 @@
 
 class PositionSetter {
 
+    const char *name = "position_setter";
+
     ros::NodeHandle n;
 
     ros::Subscriber robot_position;
@@ -40,7 +42,6 @@ public:
         odometry_tf.header.seq      = odometry_msg.header.seq       = msg->header.seq;
         
         if(must_compute) {
-            
             must_compute = false;
             
             // generate odometry and transform message header
@@ -60,6 +61,8 @@ public:
             double roll, pitch, yaw;
             m.getRPY(roll, pitch, yaw);
             q.setRPY(0, 0, yaw);
+
+            ROS_INFO("Node %s: Requested new odometry computation: setting at %lf, %lf, %lf", name, msg->pose.position.x, msg->pose.position.y, yaw);
 
             // set initial positon
             odometry_tf.transform.rotation = odometry_msg.pose.pose.orientation = tf2::toMsg(q);

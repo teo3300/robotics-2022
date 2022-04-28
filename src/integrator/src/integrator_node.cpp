@@ -14,6 +14,8 @@
 
 class IntegrationNode {
 
+    const char *name = "integrator_node";
+
     ros::NodeHandle n;
 
     ros::Subscriber cmd_velocity;
@@ -34,14 +36,18 @@ class IntegrationNode {
         velocity(2) = msg->twist.angular.z;
     }
 
+    void setMethod(Method method) {
+        ROS_INFO("Node %s: Setting integration method: %s", name, method == EULER ? "Euler" : "Runge-Kutta");
+        integrator.setMethod(method);
+    }
+
 public:
     IntegrationNode() {
 
         // setup topic comunications
         cmd_velocity = n.subscribe("cmd_vel", 1000, &IntegrationNode::integrationCallBack, this);
         position_publish = n.advertise<nav_msgs::Odometry>("odom",1000);
-
-        integrator.setMethod(RUNGE_KUTTA);
+        setMethod(EULER);
     }
 
     void main_loop() {
