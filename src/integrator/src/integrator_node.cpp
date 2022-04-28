@@ -60,11 +60,11 @@ public:
         loadVelocity(msg);
 
         // set next timeStamp for integrator (to determine integration period) and integrate velocity
-        integrator.setTimeStamp(msg->header.stamp.toSec()) << velocity;
+        integrator.setTimeStamp(ros::Time::now().toSec()) << velocity;
         position = integrator.getPosition();
 
         // generate odometry and transform message header
-        position_tf.header.stamp    = position_msg.header.stamp     = msg->header.stamp;
+        position_tf.header.stamp    = position_msg.header.stamp     = ros::Time::now();
         position_tf.header.seq      = position_msg.header.seq       = msg->header.seq;
         position_tf.header.frame_id = position_msg.header.frame_id  = "odom";
         position_tf.child_frame_id  = position_msg.child_frame_id   = "base_link";
