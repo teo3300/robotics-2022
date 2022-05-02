@@ -1,4 +1,5 @@
 #include "geometry/integrator.hpp"
+#include <ros/ros.h>
 #include <cmath>
 #include <sstream>
 #include <string>
@@ -7,7 +8,7 @@ double zeroPose[3] = {0,0,0};
 double set_base_int[9] = {0,0,0,0,0,0,0,0,1};
 
 Integrator::Integrator(Method method)
-        : method(method), currStamp(0), prevStamp(0) {
+        : method(method), currStamp(ros::Time::now().toSec()), prevStamp(0) {
     state = new Matrix(3,1,zeroPose);
     base_int = new Matrix(3,3,set_base_int);
 };

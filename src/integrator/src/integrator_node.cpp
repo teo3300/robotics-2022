@@ -47,7 +47,7 @@ public:
         // setup topic comunications
         cmd_velocity = n.subscribe("cmd_vel", 1000, &IntegrationNode::integrationCallBack, this);
         position_publish = n.advertise<nav_msgs::Odometry>("odom",1000);
-        setMethod(EULER);
+        setMethod(RUNGE_KUTTA);
     }
 
     void main_loop() {

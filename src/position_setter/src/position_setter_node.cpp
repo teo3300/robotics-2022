@@ -12,6 +12,10 @@
 #define GT_NC 4
 #define HZ 10
 
+unsigned long treshold;
+unsigned long tTresh;
+double cx, cy, ct;
+
 class PositionSetter {
 
     const char *name = "position_setter";
@@ -59,36 +63,56 @@ public:
 
     void positionSetterCallBack(const geometry_msgs::PoseStamped::ConstPtr& msg) {
         
-        // generate odometry and transform message header
-        odometry_tf.header.frame_id = odometry_msg.header.frame_id  = "world";
-        odometry_tf.child_frame_id  = odometry_msg.child_frame_id   = "odom";
-
-        // set initial position
-        odometry_tf.transform.translation.x = odometry_msg.pose.pose.position.x = msg->pose.position.x;
-        odometry_tf.transform.translation.y = odometry_msg.pose.pose.position.y = msg->pose.position.y;
-        odometry_tf.transform.translation.z = odometry_msg.pose.pose.position.z = 0; // msg->pose.position.z;
+        tf2::Quaternion q;
+        double roll, pitch, yaw;
+        cx += msg->pose.position.x/treshold; cy += msg->pose.position.y/treshold;
 
         // filter keeping yaw only
-        tf2::Quaternion q;
         tf2::fromMsg(msg->pose.orientation, q);
         q.normalize();
         tf2::Matrix3x3 m(q);
-        double roll, pitch, yaw;
         m.getRPY(roll, pitch, yaw);
-        q.setRPY(0, 0, yaw);
 
-        ROS_INFO("Node %s: Requested new odometry computation: setting at %lf, %lf, %lf", name, msg->pose.position.x, msg->pose.position.y, yaw);
+        ct += yaw/treshold;
+        tTresh--;
+        if(tTresh == 0) {
+            // generate odometry and transform message header
+            odometry_tf.header.frame_id = odometry_msg.header.frame_id  = "world";
+            odometry_tf.child_frame_id  = odometry_msg.child_frame_id   = "odom";
 
-        // set initial positon
-        odometry_tf.transform.rotation = odometry_msg.pose.pose.orientation = tf2::toMsg(q);
-        
-        // save resources
-        robot_position.shutdown();
+            // set initial position
+            odometry_tf.transform.translation.x = odometry_msg.pose.pose.position.x = cx;
+            odometry_tf.transform.translation.y = odometry_msg.pose.pose.position.y = cy;
+            odometry_tf.transform.translation.z = odometry_msg.pose.pose.position.z = 0;
+
+            // only keep quaternion's yaw
+            q.setRPY(0, 0, ct);
+
+            ROS_INFO("Node %s: Requested new odometry computation: setting at %lf, %lf, %lf", name, cx, cy, ct);
+
+            // set initial positon
+            odometry_tf.transform.rotation = odometry_msg.pose.pose.orientation = tf2::toMsg(q);
+            
+            // reset values
+            tTresh = treshold; cx = cy = ct = 0;
+
+            // save resources
+            robot_position.shutdown();
+        }
     }
 
 };
 
 int main(int argc, char* argv[]){
+    if(argc < 2) {
+        for(int i=0; i<= argc; i++){
+            ROS_INFO("argv[%i] is: %s", i, argv[i]);
+        }
+        return 1;
+    }
+    treshold = std::stoul(argv[1]);
+    tTresh = treshold;
+    cx = cy = ct = 0;
     ros::init(argc, argv, "position_setter_node");
     PositionSetter positionSetter;
     positionSetter.main_loop();
