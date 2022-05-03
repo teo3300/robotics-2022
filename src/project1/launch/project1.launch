@@ -1,7 +1,7 @@
 <launch>
 
     <arg name="bag"/>
-    <arg name="par_noise_filter" value="1"/>
+    <arg name="par_noise_filter" value="40"/>
 
     <param name="par_wheel_radius" value="0.070"/>
     <param name="par_robot_length" value="0.180"/>
@@ -15,7 +15,7 @@
 
     <node pkg="integrator" type="integrator_node" name="integrator_node" output="screen"/>
 
-    <node pkg="position_setter" type="position_setter_node" name="position_setter_node" args="$(arg par_noise_filter)" output="screen"/>
+    <node pkg="odom_broadcaster" type="odom_broadcaster_node" name="odom_broadcaster_node" args="$(arg par_noise_filter)" output="screen"/>
 
     <node pkg="inverse_rpm" type="inverse_kin" name="inverse_kin_calculator"/> <!-- output="screen"/> -->
 

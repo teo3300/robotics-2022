@@ -56,6 +56,29 @@
   <exec_depend>integrator</exec_depend>
   <exec_depend>velocity</exec_depend>
 
+  <build_depend>geometry</build_depend>
+  <build_export_depend>geometry</build_export_depend>
+  <exec_depend>geometry</exec_depend>
+
+  <build_depend>inverse_rpm</build_depend>
+  <build_export_depend>inverse_rpm</build_export_depend>
+  <exec_depend>inverse_rpm</exec_depend>
+
+  <build_depend>odom_broadcaster</build_depend>
+  <build_export_depend>odom_broadcaster</build_export_depend>
+  <exec_depend>odom_broadcaster</exec_depend>
+
+  <build_depend>proj_const</build_depend>
+  <build_export_depend>proj_const</build_export_depend>
+  <exec_depend>proj_const</exec_depend>
+
+
+  integrator
+  velocity
+  geometry
+  inverse_rpm
+  odom_broadcaster
+  proj_const
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

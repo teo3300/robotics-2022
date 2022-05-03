@@ -10,6 +10,10 @@ project(project1)
 find_package(catkin REQUIRED COMPONENTS
   integrator
   velocity
+  geometry
+  inverse_rpm
+  odom_broadcaster
+  proj_const
 )
 
 ## System dependencies are found with CMake's conventions

@@ -16,9 +16,9 @@ unsigned long treshold;
 unsigned long tTresh;
 double cx, cy, ct;
 
-class PositionSetter {
+class OdomBroadcaster {
 
-    const char *name = "position_setter";
+    const char *name = "odom_broadcaster";
 
     ros::NodeHandle n;
 
@@ -33,11 +33,11 @@ class PositionSetter {
 
 public:
 
-    PositionSetter() {
+    OdomBroadcaster() {
 
         // TODO: only use this for first position setting, use current robot position for further odometry reset
-        get_odom = n.subscribe("/robot/pose", 1000, &PositionSetter::setOdomCallback, this);
-        got_integrated = n.subscribe("odom", 1000, &PositionSetter::odomBroadcastCallback, this);
+        get_odom = n.subscribe("/robot/pose", 1000, &OdomBroadcaster::setOdomCallback, this);
+        got_integrated = n.subscribe("odom", 1000, &OdomBroadcaster::odomBroadcastCallback, this);
 
         odometry_publish = n.advertise<nav_msgs::Odometry>("base_odom",1000);
     }
@@ -107,8 +107,8 @@ int main(int argc, char* argv[]){
     treshold = std::stoul(argv[1]);
     tTresh = treshold;
     cx = cy = ct = 0;
-    ros::init(argc, argv, "position_setter_node");
-    PositionSetter positionSetter;
-    positionSetter.main_loop();
+    ros::init(argc, argv, "odom_broadcaster_node");
+    OdomBroadcaster odomBroadcaster;
+    odomBroadcaster.main_loop();
     return 0;
 }
