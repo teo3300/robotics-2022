@@ -42,9 +42,9 @@ void inverseKinCallBack(const nav_msgs::Odometry::ConstPtr& msg){
 
 int main(int argc, char *argv[]){
 
-    if(!load_parameters(argc,argv)) return 1;
-
     ros::init(argc, argv,"inverse_kinematic_calculator");
+
+    if(!load_parameters(argc,argv)) return 1;
 
     ros::NodeHandle node_Handle;
 

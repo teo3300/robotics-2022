@@ -1,26 +1,26 @@
 <launch>
 
-    <arg name="bag_name"     value="bag2"/>
+    <arg name="bag"/>
+    <arg name="par_noise_filter" value="1"/>
 
-    <arg name="wheel_radius" value="0.071"/>
-    <arg name="robot_length" value="0.180"/>
-    <arg name="robot_width"  value="0.169"/>
-    <arg name="cpr"          value="40.0"/>
-    <arg name="gear_ratio"   value="0.2"/>
-    <arg name="noise_filter" value="8"/>
+    <param name="par_wheel_radius" value="0.070"/>
+    <param name="par_robot_length" value="0.180"/>
+    <param name="par_robot_width"  value="0.169"/>
+    <param name="par_cpr"          value="40.0"/>
+    <param name="par_gear_ratio"   value="5"/>
 
-    <node pkg="rosbag" type="play" name="bag1_play" args="--clock $(find project1)/bags/$(arg bag_name).bag"/>
+    <node pkg="rosbag" type="play" name="bag_play" args="--clock $(arg bag)"/>
     
-    <node pkg="velocity" type="velocity_calculator" name="velocity_calculator" args="$(arg wheel_radius) $(arg robot_length) $(arg robot_width) $(arg cpr) $(arg gear_ratio)" output="screen"/>
+    <node pkg="velocity" type="velocity_calculator" name="velocity_calculator" output="screen"/>
 
     <node pkg="integrator" type="integrator_node" name="integrator_node" output="screen"/>
 
-    <node pkg="position_setter" type="position_setter_node" name="position_setter_node" args="3" output="screen"/>
+    <node pkg="position_setter" type="position_setter_node" name="position_setter_node" args="$(arg par_noise_filter)" output="screen"/>
 
-    <node pkg="inverse_rpm" type="inverse_kin" name="inverse_kin_calculator" args="$(arg wheel_radius) $(arg robot_length) $(arg robot_width) $(arg cpr) $(arg gear_ratio)"/> <!-- output="screen"/> -->
+    <node pkg="inverse_rpm" type="inverse_kin" name="inverse_kin_calculator"/> <!-- output="screen"/> -->
 
     <!--<node pkg="vel_debug" type="inverse_kin_debug" name="inverse_kin_debug" output="screen"/> -->
 
-    <node pkg="rviz" type="rviz" name="rviz_robot_pos" args="-d $(find project1)/launch/robot_odom.rviz"/>
+    <node pkg="rviz" type="rviz" name="rviz_robot_pos" args="-f world -d $(find project1)/launch/robot_odom.rviz"/>
 
 </launch>

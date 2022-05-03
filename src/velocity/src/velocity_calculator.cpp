@@ -74,6 +74,8 @@ void bagMoveCallBack(const sensor_msgs::JointState::ConstPtr& msg){
 
 int main(int argc,char *argv[]){
 
+    ros::init(argc, argv, "velocity_node");
+
     if(!load_parameters(argc, argv)) {
         return 1;
     }
@@ -82,8 +84,6 @@ int main(int argc,char *argv[]){
     angular_calc.setKinematic(Matrix(3,4,kinematic));
     generateDirectKinematic(kinematic, DIRECT_DISCRETE_SCA);
     tick_calc.setKinematic(Matrix(3,4,kinematic));
-
-    ros::init(argc, argv, "velocity_node");
     
     ros::NodeHandle node_Handler;
 

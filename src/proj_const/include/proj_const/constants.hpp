@@ -1,6 +1,8 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
+#include <ros/ros.h>
+
 // imported from math.c
 #define PI      3.14159265358979323846
 #define PI_2 	(PI / 2)
@@ -12,8 +14,17 @@
 #define WHEELS      4
 #define VARS        3
 
+typedef enum {
+    WHEEL_RADIUS = 0,
+    ROBOT_LENGTH,
+    ROBOT_WIDT,
+    ROBOT_CPR,
+    GEAR_RATIO,
+    param_enum_values
+} param_enum;
+
 typedef union {
-    double list[SETTABLE];
+    double list[param_enum_values];
     struct {
         double
             wheel_radius,
@@ -32,7 +43,7 @@ typedef union {
 
 #define L      (LENGTH + WIDTH)
 
-#define DIRECT_RADIANT_SEC_SCA  (RATIO*RADIUS/4)
+#define DIRECT_RADIANT_SEC_SCA  (RADIUS/(4 * RATIO))
 #define DIRECT_RADIANT_MIN_SCA  ((DIRECT_RADIANT_SEC_SCA / 60))
 #define DIRECT_ROUND_MIN_SCA    ((DIRECT_RADIANT_SEC_SCA * (2 * PI) / 60))
 #define DIRECT_DISCRETE_SCA     ((DIRECT_RADIANT_SEC_SCA * 2 * PI / CPR))
@@ -55,13 +66,12 @@ const double inv_kin[VARS * WHEELS] = {
 
 bool load_parameters(int argc, char* argv[]) {
 
-    // always pass 4 values, 0.0 to keep previous
-    if(argc < SETTABLE+1) return false;
-
-    // set specified arguments
-    for(int i=0; i<SETTABLE; i++){
-        robot_parameters.list[i] = std::stod(argv[i+1]);
-    }
+    ros::NodeHandle param_n;
+    if(!param_n.getParam("/par_wheel_radius", RADIUS)) return false;
+    if(!param_n.getParam("/par_robot_length", LENGTH)) return false;
+    if(!param_n.getParam("/par_robot_width", WIDTH)) return false;
+    if(!param_n.getParam("/par_cpr", CPR)) return false;
+    if(!param_n.getParam("/par_gear_ratio", RATIO)) return false;
 
     return true;
 }

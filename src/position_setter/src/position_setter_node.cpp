@@ -22,7 +22,8 @@ class PositionSetter {
 
     ros::NodeHandle n;
 
-    ros::Subscriber robot_position;
+    ros::Subscriber get_odom;
+    ros::Subscriber got_integrated;
 
     ros::Publisher odometry_publish;
     nav_msgs::Odometry odometry_msg;
@@ -35,33 +36,26 @@ public:
     PositionSetter() {
 
         // TODO: only use this for first position setting, use current robot position for further odometry reset
-        robot_position = n.subscribe("/robot/pose", 1000, &PositionSetter::positionSetterCallBack, this);
-        
+        get_odom = n.subscribe("/robot/pose", 1000, &PositionSetter::setOdomCallback, this);
+        got_integrated = n.subscribe("odom", 1000, &PositionSetter::odomBroadcastCallback, this);
+
         odometry_publish = n.advertise<nav_msgs::Odometry>("base_odom",1000);
     }
 
     void main_loop() {
-        
-        // do this instead of simply spinning once since /ropot/pose messages lacks some time, at the cost to use RTC and adding computational time error
-
-        unsigned int cnt=0;
-        ros::Rate r(HZ);
-
-        while (ros::ok()) {
-
-            odometry_tf.header.stamp    = odometry_msg.header.stamp     = ros::Time::now();
-            odometry_tf.header.seq      = odometry_msg.header.seq       = cnt++;
-            
-            ros::spinOnce();
-            
-            // publish both on the odom topic and send transform
-            odometry_publish.publish(odometry_msg);
-            tf_broadcaster.sendTransform(odometry_tf);
-            r.sleep();
-        }
+        ros::spin();
     }
 
-    void positionSetterCallBack(const geometry_msgs::PoseStamped::ConstPtr& msg) {
+    void odomBroadcastCallback(const nav_msgs::Odometry::ConstPtr& msg) {
+        odometry_tf.header.stamp    = odometry_msg.header.stamp     = ros::Time::now();
+        odometry_tf.header.seq      = odometry_msg.header.seq       = msg->header.seq;
+
+        // publish both on the odom topic and send transform
+        odometry_publish.publish(odometry_msg);
+        tf_broadcaster.sendTransform(odometry_tf);
+    }
+
+    void setOdomCallback(const geometry_msgs::PoseStamped::ConstPtr& msg) {
         
         tf2::Quaternion q;
         double roll, pitch, yaw;
@@ -97,7 +91,7 @@ public:
             tTresh = treshold; cx = cy = ct = 0;
 
             // save resources
-            robot_position.shutdown();
+            get_odom.shutdown();
         }
     }
 
