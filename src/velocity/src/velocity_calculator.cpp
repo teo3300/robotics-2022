@@ -73,6 +73,7 @@ void bagMoveCallBack(const sensor_msgs::JointState::ConstPtr& msg){
 
 
 int main(int argc,char *argv[]){
+    printf("velocity OK");
 
     ros::init(argc, argv, "velocity_node");
 

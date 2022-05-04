@@ -3,7 +3,7 @@
 
 #include "geometry/matrix.hpp"
 
-enum Method{EULER,RUNGE_KUTTA};
+enum Method{EULER, RUNGE_KUTTA};
 
 
 extern double zeroPose[3];
@@ -30,8 +30,8 @@ class Integrator {
     void setAngle();
 public:
     // Runge kutta integration
-    Integrator(Method method);
-    Integrator();
+    Integrator(Method method, double timestamp);
+    Integrator(double timestamp);
     ~Integrator();
 
     inline Integrator& setTimeStamp(double newStamp) {

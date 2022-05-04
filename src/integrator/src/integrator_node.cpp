@@ -18,30 +18,34 @@
 
 #include <integrator/Odom_Reset.h>
 
+#include <dynamic_reconfigure/server.h>
+#include <integrator/dinIntegratorConfig.h>
+
 unsigned long treshold;
 unsigned long tTresh;
 double cx, cy, ct;
 
-#include <dynamic_reconfigure/server.h>
-#include <integrator/dinIntegratorConfig.h>
+nav_msgs::Odometry position_msg;
+nav_msgs::Odometry odometry_msg;
+
+geometry_msgs::TransformStamped odometry_tf;
+geometry_msgs::TransformStamped position_tf;
+
+tf2::Quaternion q;
+
+Integrator node_integrator(0);
 
 class IntegrationNode {
 
     ros::NodeHandle n;
 
     ros::Subscriber cmd_velocity;
-
     ros::Subscriber get_odom;
 
     ros::Publisher position_publish;
-    nav_msgs::Odometry position_msg;
-
     ros::Publisher odometry_publish;
-    nav_msgs::Odometry odometry_msg;
 
     tf2_ros::TransformBroadcaster tf_broadcaster;
-    geometry_msgs::TransformStamped odometry_tf;
-    geometry_msgs::TransformStamped position_tf;
 
     dynamic_reconfigure::Server<integrator::dinIntegratorConfig> dynServer;
     dynamic_reconfigure::Server<integrator::dinIntegratorConfig>::CallbackType reconfigureCallBack;
@@ -49,9 +53,7 @@ class IntegrationNode {
     Matrix velocity = Matrix(3,1);
     Matrix position = Matrix(3,1);
 
-    tf2::Quaternion q;
-
-    Integrator integrator;
+    ros::ServiceServer reset;
 
     void loadVelocity(const geometry_msgs::TwistStamped::ConstPtr& msg) {
         velocity(0) = msg->twist.linear.x;
@@ -61,7 +63,7 @@ class IntegrationNode {
 
 public:
     IntegrationNode() {
-
+        
         // setup topic comunications
         cmd_velocity = n.subscribe("cmd_vel", 1000, &IntegrationNode::integrationCallBack, this);
         position_publish = n.advertise<nav_msgs::Odometry>("odom",1000);
@@ -73,8 +75,16 @@ public:
         setMethod(RUNGE_KUTTA);
         
         //NON SO A COSA SERVA _1
-        reconfigureCallBack = boost::bind(&dynamic_Reconfigure_CallBack,&integrator_enum, _1);
+        // reconfigureCallBack = boost::bind(&dynamic_Reconfigure_CallBack, &integrator_enum, _1);
         dynServer.setCallback(reconfigureCallBack);
+
+        reset = n.advertiseService<integrator::Odom_Reset::Request,
+            integrator::Odom_Reset::Response>("reset", boost::bind(&IntegrationNode::odomResetCallback, _1, _2));
+    }
+
+    void setMethod(Method method) {
+        ROS_INFO("Selected integration method: %s", method==EULER ? "euler" : "Runge-Kutta");
+        node_integrator.setMethod(method);
     }
 
     void main_loop() {
@@ -87,8 +97,8 @@ public:
         loadVelocity(msg);
 
         // set next timeStamp for integrator (to determine integration period) and integrate velocity
-        integrator.setTimeStamp(msg->header.stamp.toSec()) << velocity;
-        position = integrator.getPosition();
+        node_integrator.setTimeStamp(msg->header.stamp.toSec()) << velocity;
+        position = node_integrator.getPosition();
 
         // generate odometry and transform message header
         position_tf.header.stamp    = position_msg.header.stamp     = msg->header.stamp;
@@ -110,7 +120,7 @@ public:
         tf_broadcaster.sendTransform(position_tf);
 
         // from odom broadcaster
-        odometry_tf.header.stamp    = odometry_msg.header.stamp     = ros::Time::now();
+        odometry_tf.header.stamp    = odometry_msg.header.stamp     = msg->header.stamp;
         odometry_tf.header.seq      = odometry_msg.header.seq       = msg->header.seq;
 
         // publish both on the odom topic and send transform
@@ -148,10 +158,12 @@ public:
     
     void dynamic_Reconfigure_CallBack(char* method,integrator::dinIntegratorConfig &config/*Manca il bitmask level*/){
         //TODO : cose da fare qui quando succede un reconfigure dinamico
-        setMethod()
+        // fa cose setMethod()
     }
 
-    void setXYT(double x, double y, double theta) {
+    static void setXYT(double x, double y, double theta) {
+
+        ROS_INFO("Resetting odometry to: %lf, %lf, %lf", x, y, theta);
 
         // set position
         odometry_tf.transform.translation.x = odometry_msg.pose.pose.position.x = x;
@@ -165,25 +177,28 @@ public:
     }
 
     // position reset
-    /*void odomResetCallback(const integrator::Odom_Reset::ConstPtr& msg) {
-        integrator.resetPosition();
-        setXYT(msg->x, msg->y, msg->theta);
-    }*/
+    static bool odomResetCallback(integrator::Odom_Reset::Request &req,
+            integrator::Odom_Reset::Response &res) {
+        node_integrator.resetPosition();
+        setXYT(req.new_x, req.new_y, req.new_theta);
+        return true;
+    }
 
 };
 
 int main(int argc, char* argv[]) {
     if(argc < 2) {
         for(int i=0; i<= argc; i++){
-            ROS_INFO("argv[%i] is: %s", i, argv[i]);
+            printf("argv[%i] is: %s", i, argv[i]);
         }
         return 1;
     }
-    treshold = std::stoul(argv[1]);
+    treshold = std::atol(argv[1]);
     tTresh = treshold;
     cx = cy = ct = 0;
     ros::init(argc, argv, "integration_node");
     IntegrationNode integrationNode;
+    node_integrator.setTimeStamp(ros::Time::now().toSec());
     integrationNode.main_loop();
     return 0;
 }
