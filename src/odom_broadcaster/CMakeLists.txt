@@ -10,6 +10,7 @@ project(odom_broadcaster)
 find_package(catkin REQUIRED COMPONENTS
   integrator
   roscpp
+  odom_reset
   std_msgs
   tf2
   tf2_ros

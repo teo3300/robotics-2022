@@ -12,6 +12,8 @@
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
+#include <odom_reset/Odom_Reset.h>
+
 class IntegrationNode {
 
     const char *name = "integrator_node";
@@ -19,6 +21,9 @@ class IntegrationNode {
     ros::NodeHandle n;
 
     ros::Subscriber cmd_velocity;
+
+    // used by reset position service
+    ros::Subscriber odom_reset;
 
     ros::Publisher position_publish;
     nav_msgs::Odometry position_msg;
@@ -47,6 +52,11 @@ public:
         // setup topic comunications
         cmd_velocity = n.subscribe("cmd_vel", 1000, &IntegrationNode::integrationCallBack, this);
         position_publish = n.advertise<nav_msgs::Odometry>("odom",1000);
+
+        // subscribe to position reset
+        odom_reset = n.subscribe("odom_reset", 1000, &IntegrationNode::odomResetCallback, this);
+
+
         setMethod(RUNGE_KUTTA);
     }
 
@@ -81,6 +91,10 @@ public:
 
         position_publish.publish(position_msg);
         tf_broadcaster.sendTransform(position_tf);
+    }
+
+    void odomResetCallback(const odom_reset::Odom_Reset::ConstPtr& msg) {
+        integrator.resetPosition();
     }
 
 };

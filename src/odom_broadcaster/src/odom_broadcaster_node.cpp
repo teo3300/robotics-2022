@@ -9,6 +9,8 @@
 #include <tf2/LinearMath/Matrix3x3.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
+#include <odom_reset/Odom_Reset.h>
+
 #define GT_NC 4
 #define HZ 10
 
@@ -25,11 +27,15 @@ class OdomBroadcaster {
     ros::Subscriber get_odom;
     ros::Subscriber got_integrated;
 
+    ros::Subscriber odom_reset;
+
     ros::Publisher odometry_publish;
     nav_msgs::Odometry odometry_msg;
 
     tf2_ros::TransformBroadcaster tf_broadcaster;
     geometry_msgs::TransformStamped odometry_tf;
+
+    tf2::Quaternion q;
 
 public:
 
@@ -38,6 +44,8 @@ public:
         // TODO: only use this for first position setting, use current robot position for further odometry reset
         get_odom = n.subscribe("/robot/pose", 1000, &OdomBroadcaster::setOdomCallback, this);
         got_integrated = n.subscribe("odom", 1000, &OdomBroadcaster::odomBroadcastCallback, this);
+
+        odom_reset = n.subscribe("odom_reset", 1000, &OdomBroadcaster::odomResetCallback, this);
 
         odometry_publish = n.advertise<nav_msgs::Odometry>("base_odom",1000);
     }
@@ -57,7 +65,6 @@ public:
 
     void setOdomCallback(const geometry_msgs::PoseStamped::ConstPtr& msg) {
         
-        tf2::Quaternion q;
         double roll, pitch, yaw;
         cx += msg->pose.position.x/treshold; cy += msg->pose.position.y/treshold;
 
@@ -74,18 +81,7 @@ public:
             odometry_tf.header.frame_id = odometry_msg.header.frame_id  = "world";
             odometry_tf.child_frame_id  = odometry_msg.child_frame_id   = "odom";
 
-            // set initial position
-            odometry_tf.transform.translation.x = odometry_msg.pose.pose.position.x = cx;
-            odometry_tf.transform.translation.y = odometry_msg.pose.pose.position.y = cy;
-            odometry_tf.transform.translation.z = odometry_msg.pose.pose.position.z = 0;
-
-            // only keep quaternion's yaw
-            q.setRPY(0, 0, ct);
-
-            ROS_INFO("Node %s: Requested new odometry computation: setting at %lf, %lf, %lf", name, cx, cy, ct);
-
-            // set initial positon
-            odometry_tf.transform.rotation = odometry_msg.pose.pose.orientation = tf2::toMsg(q);
+            setXYT(cx, cy, ct);
             
             // reset values
             tTresh = treshold; cx = cy = ct = 0;
@@ -94,6 +90,24 @@ public:
             get_odom.shutdown();
         }
     }
+
+    void odomResetCallback(const odom_reset::Odom_Reset::ConstPtr& msg) {
+        setXYT(msg->x, msg->y, msg->theta);
+    }
+
+    void setXYT(double x, double y, double theta) {
+
+        // set position
+        odometry_tf.transform.translation.x = odometry_msg.pose.pose.position.x = x;
+        odometry_tf.transform.translation.y = odometry_msg.pose.pose.position.y = y;
+        odometry_tf.transform.translation.z = odometry_msg.pose.pose.position.z = 0;
+
+        // only keep quaternion's yaw
+        q.setRPY(0, 0, theta);
+        odometry_tf.transform.rotation = odometry_msg.pose.pose.orientation = tf2::toMsg(q);
+        
+    }
+
 
 };
 

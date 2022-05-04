@@ -42,6 +42,7 @@ public:
 
     void setMethod(Method method) { this->method = method; }
 
+    inline void resetPosition() { state->fill(zeroPose); }
     inline void resetPosition(Matrix position) { *state = position; }
     inline Matrix getPosition() { return Matrix(*state); }
 
