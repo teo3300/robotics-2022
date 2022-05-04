@@ -25,6 +25,8 @@ unsigned long treshold;
 unsigned long tTresh;
 double cx, cy, ct;
 
+int integrator_enum = 0;
+
 nav_msgs::Odometry position_msg;
 nav_msgs::Odometry odometry_msg;
 
@@ -48,7 +50,6 @@ class IntegrationNode {
     tf2_ros::TransformBroadcaster tf_broadcaster;
 
     dynamic_reconfigure::Server<integrator::dinIntegratorConfig> dynServer;
-    dynamic_reconfigure::Server<integrator::dinIntegratorConfig>::CallbackType reconfigureCallBack;
 
     Matrix velocity = Matrix(3,1);
     Matrix position = Matrix(3,1);
@@ -72,17 +73,16 @@ public:
         // from broadcaster
         get_odom = n.subscribe("/robot/pose", 1000, &IntegrationNode::setOdomCallback, this);
 
-        setMethod(RUNGE_KUTTA);
+        node_integrator.setMethod(EULER);
         
         //NON SO A COSA SERVA _1
-        // reconfigureCallBack = boost::bind(&dynamic_Reconfigure_CallBack, &integrator_enum, _1);
-        dynServer.setCallback(reconfigureCallBack);
+        dynServer.setCallback(boost::bind(&dynamic_Reconfigure_CallBack, &integrator_enum, _1, _2));
 
         reset = n.advertiseService<integrator::Odom_Reset::Request,
             integrator::Odom_Reset::Response>("reset", boost::bind(&IntegrationNode::odomResetCallback, _1, _2));
     }
 
-    void setMethod(Method method) {
+    static void setMethod(Method method) {
         ROS_INFO("Selected integration method: %s", method==EULER ? "euler" : "Runge-Kutta");
         node_integrator.setMethod(method);
     }
@@ -156,9 +156,8 @@ public:
         }
     }
     
-    void dynamic_Reconfigure_CallBack(char* method,integrator::dinIntegratorConfig &config/*Manca il bitmask level*/){
-        //TODO : cose da fare qui quando succede un reconfigure dinamico
-        // fa cose setMethod()
+    static void dynamic_Reconfigure_CallBack(int* method,integrator::dinIntegratorConfig &config, int level){
+        setMethod((Method)config.integrator_enum);
     }
 
     static void setXYT(double x, double y, double theta) {
