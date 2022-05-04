@@ -4,20 +4,23 @@
 int main(int argc, char *argv[]) {
     ros::init(argc, argv, "reset_client");
 
-    if(argc != 4) {
-        ROS_INFO("usage: reset x y theta");
-        return 1;
-    }
-
     ros::NodeHandle n;
 
     ros::ServiceClient client = n.serviceClient<integrator::Odom_Reset>("reset");
 
     integrator::Odom_Reset srv;
 
-    srv.request.new_x = atof(argv[1]);
-    srv.request.new_y = atof(argv[2]);
-    srv.request.new_theta = atof(argv[3]);
+    if (argc == 4) {
+        srv.request.new_x = atof(argv[1]);
+        srv.request.new_y = atof(argv[2]);
+        srv.request.new_theta = atof(argv[3]);
+        srv.request.reset_odom = false;
+    } else if (argc == 1) {
+        srv.request.reset_odom = true;
+    } else {
+        ROS_ERROR("usage: reset_client [x y theta]\ndo not specify to reset odometry to current robot position");
+        return -1;
+    }
 
     if (!client.call(srv)) {
         ROS_ERROR("call failed");

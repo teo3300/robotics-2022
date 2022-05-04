@@ -1,7 +1,6 @@
 float64 new_x
 float64 new_y
 float64 new_theta
+bool    reset_odom
 ---
-float64 old_x
-float64 old_y
-float64 old_theta
+int64 ok

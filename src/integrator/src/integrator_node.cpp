@@ -27,8 +27,8 @@ double cx, cy, ct;
 
 int integrator_enum = 0;
 
-nav_msgs::Odometry position_msg;
 nav_msgs::Odometry odometry_msg;
+nav_msgs::Odometry position_msg;
 
 geometry_msgs::TransformStamped odometry_tf;
 geometry_msgs::TransformStamped position_tf;
@@ -112,7 +112,6 @@ public:
         position_tf.transform.translation.z = position_msg.pose.pose.position.z = 0;
         
         // set rotation
-        tf2::Quaternion q;
         q.setRPY(0, 0, position(2));
         position_tf.transform.rotation = position_msg.pose.pose.orientation = tf2::toMsg(q);
 
@@ -175,9 +174,42 @@ public:
         
     }
 
+    static void setNewPosition(double &x, double &y, double &theta) {
+        Matrix odom_mat(3,1);
+        odom_mat(0) = odometry_msg.pose.pose.position.x;
+        odom_mat(1) = odometry_msg.pose.pose.position.y;
+
+        double inutile;
+
+        tf2::Quaternion qt;
+        tf2::fromMsg(odometry_msg.pose.pose.orientation, qt);
+        tf2::Matrix3x3 m(qt);
+        m.getRPY(inutile, inutile, odom_mat(2));
+
+        Matrix offset_mat = node_integrator.getPosition();
+
+        Matrix new_pose(3,1);
+
+        Matrix transf_mat(3,3); for(int i=0; i<3*3; i++) transf_mat(i) = 0; transf_mat(2,2) = 1;
+        double COS = cos(odom_mat(2));
+        double SIN = sin(odom_mat(2));
+
+        transf_mat(0,0) =  COS;
+        transf_mat(0,1) = -SIN;
+        transf_mat(1,0) =  SIN;
+        transf_mat(1,1) =  COS;
+
+        new_pose = odom_mat + transf_mat * offset_mat;
+
+        x = new_pose(0); y = new_pose(1); theta = new_pose(2); 
+    }
+
     // position reset
     static bool odomResetCallback(integrator::Odom_Reset::Request &req,
             integrator::Odom_Reset::Response &res) {
+        if(req.reset_odom){
+            setNewPosition(req.new_x, req.new_y, req.new_theta);
+        }
         node_integrator.resetPosition();
         setXYT(req.new_x, req.new_y, req.new_theta);
         return true;

@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /Axes1
         - /Pose1
         - /Odometry1
         - /Odometry1/Shape1
@@ -55,12 +56,14 @@ Visualization Manager:
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
-    - Class: rviz/Axes
+    - Alpha: 1
+      Class: rviz/Axes
       Enabled: true
       Length: 1
       Name: Axes
-      Radius: 0.07999999821186066
+      Radius: 0.10000000149011612
       Reference Frame: odom
+      Show Trail: false
       Value: true
     - Alpha: 1
       Axes Length: 1
@@ -71,6 +74,7 @@ Visualization Manager:
       Head Length: 0.30000001192092896
       Head Radius: 0.10000000149011612
       Name: Pose
+      Queue Size: 10
       Shaft Length: 1
       Shaft Radius: 0.05000000074505806
       Shape: Axes
@@ -98,6 +102,7 @@ Visualization Manager:
       Keep: 1000
       Name: Odometry
       Position Tolerance: 0.009999999776482582
+      Queue Size: 10
       Shape:
         Alpha: 1
         Axes Length: 1
@@ -139,25 +144,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 12.057093620300293
+      Distance: 6.420997619628906
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
+      Field of View: 0.7853981852531433
       Focal Point:
-        X: 0.16039115190505981
-        Y: -0.3938501179218292
-        Z: -0.00018310546875
+        X: 1.5473917722702026
+        Y: -1.2668051719665527
+        Z: -0.1376085728406906
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.9797967672348022
+      Pitch: 0.9497969150543213
       Target Frame: <Fixed Frame>
-      Value: Orbit (rviz)
-      Yaw: 4.6281843185424805
+      Yaw: 3.1081864833831787
     Saved: ~
 Window Geometry:
   Displays:
@@ -175,5 +180,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1299
-  X: 67
-  Y: 27
+  X: 72
+  Y: 116
