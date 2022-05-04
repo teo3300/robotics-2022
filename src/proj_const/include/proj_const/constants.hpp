@@ -47,7 +47,7 @@ typedef union {
 #define DIRECT_RADIANT_MIN_SCA  ((DIRECT_RADIANT_SEC_SCA / 60))
 #define DIRECT_ROUND_MIN_SCA    ((DIRECT_RADIANT_SEC_SCA * (2 * PI) / 60))
 #define DIRECT_DISCRETE_SCA     ((DIRECT_RADIANT_SEC_SCA * 2 * PI / CPR))
-#define INVERSE_SCA             ((1.0/RADIUS))
+#define INVERSE_SCA             (60.0/RADIUS)
 
 Parameters robot_parameters;
 
