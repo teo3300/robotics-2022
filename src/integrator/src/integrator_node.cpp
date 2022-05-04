@@ -144,6 +144,8 @@ public:
             // save resources
             get_odom.shutdown();
         }
+    }
+    
     void dynamic_Reconfigure_CallBack(char* method,integrator::dinIntegratorConfig &config/*Manca il bitmask level*/){
         //TODO : cose da fare qui quando succede un reconfigure dinamico
         setMethod()
