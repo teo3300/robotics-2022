@@ -10,11 +10,11 @@ project(integrator)
 find_package(catkin REQUIRED COMPONENTS
   geometry
   velocity
-  odom_reset
   roscpp
   geometry_msgs
   nav_msgs
   tf
+  dynamic_reconfigure
 )
 
 ## System dependencies are found with CMake's conventions
@@ -58,11 +58,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  Odom_Reset.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -72,10 +71,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   geometry_msgs#   nav_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs #   nav_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -92,10 +91,9 @@ find_package(catkin REQUIRED COMPONENTS
 ##     and list every .cfg file to be processed
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
+generate_dynamic_reconfigure_options(
+  cfg/integration.cfg
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -109,7 +107,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES integrator
-#  CATKIN_DEPENDS geometry geometry_msgs nav_msgs roscpp velocity
+  CATKIN_DEPENDS geometry message_runtime
 #  DEPENDS system_lib
 )
 

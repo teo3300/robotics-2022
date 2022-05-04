@@ -22,9 +22,10 @@ unsigned long treshold;
 unsigned long tTresh;
 double cx, cy, ct;
 
-class IntegrationNode {
+#include <dynamic_reconfigure/server.h>
+#include <integrator/dinIntegratorConfig.h>
 
-    const char *name = "integrator_node";
+class IntegrationNode {
 
     ros::NodeHandle n;
 
@@ -42,6 +43,9 @@ class IntegrationNode {
     geometry_msgs::TransformStamped odometry_tf;
     geometry_msgs::TransformStamped position_tf;
 
+    dynamic_reconfigure::Server<integrator::dinIntegratorConfig> dynServer;
+    dynamic_reconfigure::Server<integrator::dinIntegratorConfig>::CallbackType reconfigureCallBack;
+
     Matrix velocity = Matrix(3,1);
     Matrix position = Matrix(3,1);
 
@@ -55,11 +59,6 @@ class IntegrationNode {
         velocity(2) = msg->twist.angular.z;
     }
 
-    void setMethod(Method method) {
-        ROS_INFO("Node %s: Setting integration method: %s", name, method == EULER ? "Euler" : "Runge-Kutta");
-        integrator.setMethod(method);
-    }
-
 public:
     IntegrationNode() {
 
@@ -68,11 +67,14 @@ public:
         position_publish = n.advertise<nav_msgs::Odometry>("odom",1000);
         odometry_publish = n.advertise<nav_msgs::Odometry>("base_odom",1000);
 
-        setMethod(RUNGE_KUTTA);
-
         // from broadcaster
         get_odom = n.subscribe("/robot/pose", 1000, &IntegrationNode::setOdomCallback, this);
 
+        setMethod(RUNGE_KUTTA);
+        
+        //NON SO A COSA SERVA _1
+        reconfigureCallBack = boost::bind(&dynamic_Reconfigure_CallBack,&integrator_enum, _1);
+        dynServer.setCallback(reconfigureCallBack);
     }
 
     void main_loop() {
@@ -85,11 +87,11 @@ public:
         loadVelocity(msg);
 
         // set next timeStamp for integrator (to determine integration period) and integrate velocity
-        integrator.setTimeStamp(ros::Time::now().toSec()) << velocity;
+        integrator.setTimeStamp(msg->header.stamp.toSec()) << velocity;
         position = integrator.getPosition();
 
         // generate odometry and transform message header
-        position_tf.header.stamp    = position_msg.header.stamp     = ros::Time::now();
+        position_tf.header.stamp    = position_msg.header.stamp     = msg->header.stamp;
         position_tf.header.seq      = position_msg.header.seq       = msg->header.seq;
         position_tf.header.frame_id = position_msg.header.frame_id  = "odom";
         position_tf.child_frame_id  = position_msg.child_frame_id   = "base_link";
@@ -142,6 +144,9 @@ public:
             // save resources
             get_odom.shutdown();
         }
+    void dynamic_Reconfigure_CallBack(char* method,integrator::dinIntegratorConfig &config/*Manca il bitmask level*/){
+        //TODO : cose da fare qui quando succede un reconfigure dinamico
+        setMethod()
     }
 
     void setXYT(double x, double y, double theta) {

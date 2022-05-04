@@ -12,7 +12,6 @@ find_package(catkin REQUIRED COMPONENTS
   velocity
   geometry
   inverse_rpm
-  odom_broadcaster
   proj_const
 )
 
