@@ -26,23 +26,11 @@ ros::Subscriber bag;
 ros::Publisher bagpub;
 
 void inverseKinCallBack(const geometry_msgs::TwistStamped::ConstPtr& msg){
-    //getting values from topic odom
-    double* values = new double(3);
-<<<<<<< HEAD
-    values[0] = msg->pose.pose.position.x;
-    values[1] = msg->pose.pose.position.y;
-
-    // filter keeping yaw only
-    tf2::fromMsg(msg->pose.orientation, qt);
-    q.normalize();
-    tf2::Matrix3x3 m(qt);
-    m.getRPY(roll, pitch, yaw);
-
-=======
+    //getting values from topic cmd_vel
+    double values[3];
     values[0] = msg->twist.linear.x;
     values[1] = msg->twist.linear.y;
     values[2] = msg->twist.angular.z;
->>>>>>> 3b2a6be5f3d7af9795c32ea59237dc4c7653ccab
     Matrix pose(3,1,values);
     //performing inverse computation
     result = inverse_matrix * pose;
@@ -58,7 +46,6 @@ void inverseKinCallBack(const geometry_msgs::TwistStamped::ConstPtr& msg){
     wheel_msg.rpm_rl=result.get(2,0);
     wheel_msg.rpm_rr=result.get(3,0);
     pub.publish(wheel_msg);
-    free(values);
     result.fill(clean);
 }
 

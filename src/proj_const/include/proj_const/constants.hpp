@@ -4,11 +4,11 @@
 #include <ros/ros.h>
 
 // imported from math.c
-#define PI      3.14159265358979323846
-#define PI_2 	(PI / 2)
-#define PI_4 	(PI / 4)
-#define _1_PI 	0.318309886183790671538
-#define _2_PI 	(_1_PI * 2)
+#define ROS_PI      (3.14159265358979323846)
+#define ROS_PI_2 	(ROS_PI / 2)
+#define ROS_PI_4 	(ROS_PI / 4)
+#define ROS__1_PI 	(0.318309886183790671538)
+#define ROS__2_PI 	(ROS__1_PI * 2)
 
 #define SETTABLE    5
 #define WHEELS      4
@@ -45,9 +45,9 @@ typedef union {
 
 #define DIRECT_RADIANT_SEC_SCA  (RADIUS/(4 * RATIO))
 #define DIRECT_RADIANT_MIN_SCA  ((DIRECT_RADIANT_SEC_SCA / 60))
-#define DIRECT_ROUND_MIN_SCA    ((DIRECT_RADIANT_SEC_SCA * (2 * PI) / 60))
-#define DIRECT_DISCRETE_SCA     ((DIRECT_RADIANT_SEC_SCA * 2 * PI / CPR))
-#define INVERSE_SCA             (60.0/RADIUS)
+#define DIRECT_ROUND_MIN_SCA    ((DIRECT_RADIANT_SEC_SCA * (2 * ROS_PI) / 60))
+#define DIRECT_DISCRETE_SCA     ((DIRECT_RADIANT_SEC_SCA * 2 * ROS_PI / CPR))
+#define INVERSE_SCA             (60.0/RADIUS * RATIO)
 
 Parameters robot_parameters;
 

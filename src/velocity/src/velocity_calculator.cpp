@@ -32,7 +32,7 @@ void bagMoveCallBack(const sensor_msgs::JointState::ConstPtr& msg){
     tick_input.fill(msg->position.data());
     //calculating velocity
     angular_speed = angular_calc << angular_input;
-    tick_speed = tick_calc.setTimeStamp(ros::Time::now().toSec())<< (tick_input - old_tick_input);
+    tick_speed = tick_calc.setTimeStamp(msg->header.stamp /*ros::Time::now()*/.toSec())<< (tick_input - old_tick_input);
     //generating angular message
     geometry_msgs::TwistStamped angular_vel_msg;
     angular_vel_msg.twist.linear.x = angular_speed(0);
@@ -41,7 +41,7 @@ void bagMoveCallBack(const sensor_msgs::JointState::ConstPtr& msg){
     angular_vel_msg.twist.angular.x = 0;
     angular_vel_msg.twist.angular.y = 0;
     angular_vel_msg.twist.angular.z = angular_speed(2);
-    angular_vel_msg.header.stamp = ros::Time::now();
+    angular_vel_msg.header.stamp = msg->header.stamp; //ros::Time::now();
     angular_vel_msg.header.frame_id = msg->header.frame_id;
     angular_vel_msg.header.seq = msg->header.seq;
     //generating tick message
@@ -54,12 +54,12 @@ void bagMoveCallBack(const sensor_msgs::JointState::ConstPtr& msg){
     tick_vel_msg.twist.angular.z = tick_speed(2);
 
     // replicating header from /wheel_state topic to angular_cmd_vel
-    angular_vel_msg.header.stamp = ros::Time::now();
+    angular_vel_msg.header.stamp = msg->header.stamp; // ros::Time::now();
     angular_vel_msg.header.frame_id = msg->header.frame_id;
     angular_vel_msg.header.seq = msg->header.seq;
     
     // replicating header from /wheel_state topic to cmd_vel
-    tick_vel_msg.header.stamp = ros::Time::now();
+    tick_vel_msg.header.stamp = msg->header.stamp; // ros::Time::now();
     tick_vel_msg.header.frame_id = msg->header.frame_id;
     tick_vel_msg.header.seq = msg->header.seq;
 

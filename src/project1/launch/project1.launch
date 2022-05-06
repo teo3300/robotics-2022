@@ -1,13 +1,13 @@
 <launch>
 
     <arg name="bag"/>
-    <arg name="par_noise_filter" value="40"/>
+    <arg name="par_noise_filter" value="1"/>
 
     <param name="par_wheel_radius" value="0.070"/>
     <param name="par_robot_length" value="0.180"/>
     <param name="par_robot_width"  value="0.169"/>
     <param name="par_cpr"          value="40.0"/>
-    <param name="par_gear_ratio"   value="5"/>
+    <param name="par_gear_ratio"   value="5.0"/>
 
     <node pkg="rosbag" type="play" name="bag_play" args="--clock $(arg bag)"/>
     
