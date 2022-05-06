@@ -35,11 +35,11 @@ typedef union {
     } nominal;
 } Parameters;
 
-#define RADIUS (robot_parameters.nominal.wheel_radius)
-#define LENGTH (robot_parameters.nominal.robot_length)
-#define WIDTH  (robot_parameters.nominal.robot_width)
-#define CPR    (robot_parameters.nominal.robot_cpr)
-#define RATIO  (robot_parameters.nominal.gear_ratio)
+#define RADIUS   (robot_parameters.nominal.wheel_radius)
+#define LENGTH   (robot_parameters.nominal.robot_length)
+#define WIDTH    (robot_parameters.nominal.robot_width)
+#define CPR      (robot_parameters.nominal.robot_cpr)
+#define RATIO    (robot_parameters.nominal.gear_ratio)
 
 #define L      (LENGTH + WIDTH)
 
