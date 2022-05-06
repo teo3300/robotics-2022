@@ -11,10 +11,15 @@
 #include "ros/subscriber.h"
 #include <iostream>
 
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Matrix3x3.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
 double clean[4] = {0,0,0,0};
 
 Matrix inverse_matrix(4,3);
 Matrix result(4,1,clean);
+
 ros::Subscriber sub;
 ros::Publisher pub;
 ros::Subscriber bag;
@@ -25,7 +30,13 @@ void inverseKinCallBack(const nav_msgs::Odometry::ConstPtr& msg){
     double* values = new double(3);
     values[0] = msg->pose.pose.position.x;
     values[1] = msg->pose.pose.position.y;
-    values[2] = msg->pose.pose.position.z;
+
+    // filter keeping yaw only
+    tf2::fromMsg(msg->pose.orientation, qt);
+    q.normalize();
+    tf2::Matrix3x3 m(qt);
+    m.getRPY(roll, pitch, yaw);
+
     Matrix pose(3,1,values);
     //performing inverse computation
     result = inverse_matrix * pose;

@@ -57,7 +57,7 @@ const double dir_kin_template[WHEELS * VARS] = {
     -1,   1,  -1,   1
 };
 
-const double inv_kin[VARS * WHEELS] = {
+const double inv_kin_template[VARS * WHEELS] = {
     1,  -1,  -1,
     1,   1,   1,
     1,   1,  -1,
@@ -84,8 +84,8 @@ void generateDirectKinematic(double* mem, double scalar) {
 }
 void generateInverseKinematic(double* mem, double scalar) {
     for(int i=0; i<WHEELS*VARS; i++) {
-        mem[i] = inv_kin[i]*scalar;
-        if(!((i+1) % VARS)) mem[i] = mem[i] / L;
+        mem[i] = inv_kin_template[i]*scalar;
+        if(!((i+1) % VARS)) mem[i] = mem[i] * L;
     }
 }
 
