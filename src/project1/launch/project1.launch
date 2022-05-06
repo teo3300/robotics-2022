@@ -1,7 +1,7 @@
 <launch>
 
     <arg name="bag"/>
-    <arg name="par_noise_filter" value="40"/>
+    <arg name="par_noise_filter" value="1"/>
 
     <param name="par_wheel_radius" value="0.070"/>
     <param name="par_robot_length" value="0.180"/>

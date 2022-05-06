@@ -45,18 +45,6 @@ void inverseKinCallBack(const nav_msgs::Odometry::ConstPtr& msg){
     result.fill(clean);
 }
 
-void bagCallBack(const sensor_msgs::JointState::ConstPtr& msg){
-    inverse_rpm::Wheels_Rpm wheel_msg;
-    wheel_msg.rpm_fl=msg->velocity[0];
-    wheel_msg.rpm_fr=msg->velocity[1];
-    wheel_msg.rpm_rl=msg->velocity[2];
-    wheel_msg.rpm_rr=msg->velocity[3];
-    wheel_msg.header.stamp = msg->header.stamp;
-    wheel_msg.header.frame_id = msg->header.frame_id;
-    wheel_msg.header.seq = msg->header.seq;
-    bagpub.publish(wheel_msg);
-}
-
 int main(int argc, char *argv[]){
 
     ros::init(argc, argv,"inverse_kinematic_calculator");
@@ -73,7 +61,6 @@ int main(int argc, char *argv[]){
    
     sub = node_Handle.subscribe("odom",1000,inverseKinCallBack);
     pub = node_Handle.advertise<inverse_rpm::Wheels_Rpm>("wheels_rpm",1000);
-    bag = node_Handle.subscribe("wheel_states",1000,bagCallBack);
     bagpub = node_Handle.advertise<inverse_rpm::Wheels_Rpm>("bag_read_rpm",1000);
 
     ros::spin();
