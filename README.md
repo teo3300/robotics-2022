@@ -90,6 +90,7 @@ roslaunch project1 project1.launch bag:=/full/path/to/the/rosbag
 
 ```mermaid
     graph LR
+    reset["/reset"] --> integrator
     robot_pose["/robot/pose"] --> integrator
     velocity(velocity_calculator) --> cmd_vel["/cmd_vel"]
     wheel_state["/wheel_state"] --> velocity
@@ -97,7 +98,6 @@ roslaunch project1 project1.launch bag:=/full/path/to/the/rosbag
     integrator(integrator) --> odom["/odom"]
     integrator --> base_odom["/base_odom"]
     cmd_vel --> integrator
-    reset["/reset"] --> integrator
     inverse_rpm(inverse_rpm_calculator) --> wheels_rpm["/wheels_rpm"]
-    odom --> inverse_rpm
+    cmd_vel --> inverse_rpm
 ```
