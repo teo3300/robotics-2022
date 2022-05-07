@@ -8,7 +8,7 @@
 void odomCallBack(const nav_msgs::Odometry::ConstPtr& msg){
     ROS_INFO("Got a message from integrator on topic odom");
     ROS_INFO("Checking various info from timestamp");
-    ROS_INFO("timestamp : %f,\tframe_id : %s,\tchild_frame_id :%s",ros::Time::now().toSec(),msg->header.frame_id.c_str(),msg->child_frame_id.c_str());
+    ROS_INFO("timestamp : %f,\tframe_id : %s,\tchild_frame_id :%s", msg->header.stamp.toSec(),msg->header.frame_id.c_str(),msg->child_frame_id.c_str());
     ROS_INFO("Checking velocity info");
     ROS_INFO("Vx : %lf,\tVy : %lf,\tVz :%lf",msg->twist.twist.linear.x,msg->twist.twist.linear.y,msg->twist.twist.linear.z);
     ROS_INFO("Wx : %lf,\tWy : %lf,\tWz :%lf",msg->twist.twist.angular.x,msg->twist.twist.angular.y,msg->twist.twist.angular.z);

@@ -39,6 +39,8 @@ Integrator node_integrator(0);
 
 class IntegrationNode {
 
+    bool firstInt = true;
+
     ros::NodeHandle n;
 
     ros::Subscriber cmd_velocity;
@@ -97,11 +99,16 @@ public:
         loadVelocity(msg);
 
         // set next timeStamp for integrator (to determine integration period) and integrate velocity
-        node_integrator.setTimeStamp(msg->header.stamp.toSec()) << velocity;
+        if(firstInt) {
+            node_integrator.setTimeStamp(msg->header.stamp.toSec());
+            firstInt = false;
+        } else {
+            node_integrator.setTimeStamp(msg->header.stamp.toSec()) << velocity;
+        }
         position = node_integrator.getPosition();
 
         // generate odometry and transform message header
-        position_tf.header.stamp    = position_msg.header.stamp     = ros::Time::now();
+        position_tf.header.stamp    = position_msg.header.stamp     = msg->header.stamp;
         position_tf.header.seq      = position_msg.header.seq       = msg->header.seq;
         position_tf.header.frame_id = position_msg.header.frame_id  = "odom";
         position_tf.child_frame_id  = position_msg.child_frame_id   = "base_link";
@@ -119,7 +126,7 @@ public:
         tf_broadcaster.sendTransform(position_tf);
 
         // from odom broadcaster
-        odometry_tf.header.stamp    = odometry_msg.header.stamp     = ros::Time::now();
+        odometry_tf.header.stamp    = odometry_msg.header.stamp     = msg->header.stamp;
         odometry_tf.header.seq      = odometry_msg.header.seq       = msg->header.seq;
 
         // publish both on the odom topic and send transform
@@ -229,7 +236,7 @@ int main(int argc, char* argv[]) {
     cx = cy = ct = 0;
     ros::init(argc, argv, "integration_node");
     IntegrationNode integrationNode;
-    node_integrator.setTimeStamp(ros::Time::now().toSec());
+    node_integrator.setTimeStamp(0);
     integrationNode.main_loop();
     return 0;
 }

@@ -8,7 +8,7 @@ void angular_speed_Callback(const geometry_msgs::TwistStamped::ConstPtr& msg){
     ROS_INFO("Printing some infos");
     ROS_INFO("Vel x :%f ,\tVel y : %f,\tVel z :%f",msg->twist.linear.x,msg->twist.linear.y,msg->twist.linear.z);
     ROS_INFO("Ang_Vel x :%f ,\tAng_Vel y : %f,\tAng_Vel z :%f",msg->twist.angular.x,msg->twist.angular.y,msg->twist.angular.z);
-    ROS_INFO("Checking timestam in second : %f",ros::Time::now().toSec());
+    ROS_INFO("Checking timestam in second : %f",msg->header.stamp.toSec());
 }
 
 void tick_speed_CallBack(const geometry_msgs::TwistStamped::ConstPtr& msg){
@@ -16,7 +16,7 @@ void tick_speed_CallBack(const geometry_msgs::TwistStamped::ConstPtr& msg){
     ROS_INFO("Printing some infos");
     ROS_INFO("Vel x :%f ,\tVel y : %f,\tVel z :%f",msg->twist.linear.x,msg->twist.linear.y,msg->twist.linear.z);
     ROS_INFO("Ang_Vel x :%f ,\tAng_Vel y : %f,\tAng_Vel z :%f",msg->twist.angular.x,msg->twist.angular.y,msg->twist.angular.z);
-    ROS_INFO("Checking timestam in second : %f\n",ros::Time::now().toSec());
+    ROS_INFO("Checking timestam in second : %f\n",msg->header.stamp.toSec());
 }
 
 int main(int argc,char *argv[]){

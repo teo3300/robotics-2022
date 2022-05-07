@@ -1,9 +1,9 @@
 <launch>
 
     <arg name="bag"/>
-    <arg name="par_noise_filter" value="10"/>
-    <arg name="slid_wind_size" value="4"/>
-    <arg name="bag_speed" value="1"/>
+    <arg name="par_noise_filter" value="0"/>
+    <arg name="slid_wind_size" value="1"/>
+    <arg name="bag_speed" value="5"/>
 
     <param name="par_wheel_radius" value="0.070"/>
     <param name="par_robot_length" value="0.180"/>
