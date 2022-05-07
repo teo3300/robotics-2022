@@ -31,6 +31,10 @@ inline void Matrix::fill(const double t[]){
     memcpy(dat, t, width*height*sizeof(double));
 }
 
+void Matrix::dump(double* t){
+    memcpy(t, dat, width*height*sizeof(double));
+}
+
 double &Matrix::operator()(unsigned i) {
     return dat[i];
 }

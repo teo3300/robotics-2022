@@ -128,19 +128,19 @@ public:
     }
 
     void setOdomCallback(const geometry_msgs::PoseStamped::ConstPtr& msg) {
-        
-        double roll, pitch, yaw;
-        cx += msg->pose.position.x/treshold; cy += msg->pose.position.y/treshold;
+        if(tTresh > 0) {
+            double roll, pitch, yaw;
+            cx += msg->pose.position.x/treshold; cy += msg->pose.position.y/treshold;
 
-        // filter keeping yaw only
-        tf2::fromMsg(msg->pose.orientation, q);
-        q.normalize();
-        tf2::Matrix3x3 m(q);
-        m.getRPY(roll, pitch, yaw);
+            // filter keeping yaw only
+            tf2::fromMsg(msg->pose.orientation, q);
+            q.normalize();
+            tf2::Matrix3x3 m(q);
+            m.getRPY(roll, pitch, yaw);
 
-        ct += yaw/treshold;
-        tTresh--;
-        if(tTresh == 0) {
+            ct += yaw/treshold;
+            tTresh--;
+        } else {
             // generate odometry and transform message header
             odometry_tf.header.frame_id = odometry_msg.header.frame_id  = "world";
             odometry_tf.child_frame_id  = odometry_msg.child_frame_id   = "odom";

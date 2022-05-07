@@ -25,6 +25,61 @@ ros::Publisher pub;
 ros::Subscriber bag;
 ros::Publisher bagpub;
 
+class AvgQueue {
+    double avgVal[4];
+    double** queue = nullptr;
+    int windowSize = 0;
+    int curr = 0;
+
+    void make(int windowSize) {
+        this->windowSize = windowSize;
+        queue = new double*[windowSize];
+        for(int i=0; i<windowSize; i++) {
+            queue[i] = new double[4];
+        }
+    }
+
+    void del() {
+        for(int i=0; i<windowSize; i++) {
+            delete[] &queue[i];
+        }
+        delete[] queue;
+    }
+public:
+
+    AvgQueue(int windowSize) {
+        make(windowSize);
+    }
+
+    ~AvgQueue() {
+        del();
+    }
+
+    void setSize(int windowSize) {
+        del();
+        make(windowSize);
+    }
+
+    void push(double val[4]) {
+        for(int i=0; i<4; i++) {
+            queue[curr][i] = val[i];
+        }
+        curr = (curr+1)%windowSize;
+    }
+
+    void doAvg() {
+        for(int j=0; j<4; j++) {
+            double tmp = 0;
+            for(int i=0; i<windowSize; i++) {
+                tmp += queue[i][j];
+            }
+            avgVal[j] = tmp/windowSize;
+        }
+    }
+
+    inline double getAvg(unsigned i) { return avgVal[i]; }
+} avgQueue(0);
+
 void inverseKinCallBack(const geometry_msgs::TwistStamped::ConstPtr& msg){
     //getting values from topic cmd_vel
     double values[3];
@@ -34,6 +89,13 @@ void inverseKinCallBack(const geometry_msgs::TwistStamped::ConstPtr& msg){
     Matrix pose(3,1,values);
     //performing inverse computation
     result = inverse_matrix * pose;
+
+    // sliding window avg denoise
+    double tmp[4];
+    result.dump(tmp);
+    avgQueue.push(tmp);
+    avgQueue.doAvg();
+
     inverse_rpm::Wheels_Rpm wheel_msg;
     // generating mesage header
     wheel_msg.header.stamp = msg->header.stamp;
@@ -41,15 +103,21 @@ void inverseKinCallBack(const geometry_msgs::TwistStamped::ConstPtr& msg){
     wheel_msg.header.seq = msg->header.seq;
 
     //genererating and sending msg
-    wheel_msg.rpm_fl=result.get(0,0);
-    wheel_msg.rpm_fr=result.get(1,0);
-    wheel_msg.rpm_rl=result.get(2,0);
-    wheel_msg.rpm_rr=result.get(3,0);
+    wheel_msg.rpm_fl=avgQueue.getAvg(0);
+    wheel_msg.rpm_fr=avgQueue.getAvg(1);
+    wheel_msg.rpm_rl=avgQueue.getAvg(2);
+    wheel_msg.rpm_rr=avgQueue.getAvg(3);
     pub.publish(wheel_msg);
     result.fill(clean);
 }
 
 int main(int argc, char *argv[]){
+
+    if(argc < 2) {
+        avgQueue.setSize(1);
+    } else {
+        avgQueue.setSize(atoi(argv[1]));
+    }
 
     ros::init(argc, argv,"inverse_kinematic_calculator");
 

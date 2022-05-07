@@ -38,9 +38,9 @@
 
 ## TF tree structure:
 ```mermaid
-    graph TD
-    A[world] -- base transformation --> B[odom]
-    B -- robot position relative to the initial position --> C[base_link]
+    graph LR
+    A[world] --> B[odom]
+    B --> C[base_link]
 ```
 
 ---
@@ -68,9 +68,9 @@ rosrun velocity velocity_calculator
 rosrun integrator integrator_node <GT_noise_filter>
 ```
 
-- **inverse_rpm**: starts the inverse kinematic's computation node
+- **inverse_rpm**: starts the inverse kinematic's computation node (optional: `sliding_window_size` specifies the size of a sliding window to average the output noise)
 ```
-rosrun inverse_rpm inverse_kin
+rosrun inverse_rpm inverse_kin [sliding_window_size]
 ```
 
 - **odometry reset client**: asks the integrator node to reset odometry to a specified position (if `x`, `y` and `theta` are not specified reset odometry to current robot position)
@@ -89,15 +89,19 @@ roslaunch project1 project1.launch bag:=/full/path/to/the/rosbag
 ### Nodes and topics tree
 
 ```mermaid
-    graph LR
-    reset["/reset"] --> integrator
-    robot_pose["/robot/pose"] --> integrator
-    velocity(velocity_calculator) --> cmd_vel["/cmd_vel"]
-    wheel_state["/wheel_state"] --> velocity
-    velocity --> angular_cmd_vel["/angular_cmd_vel"]
-    integrator(integrator) --> odom["/odom"]
-    integrator --> base_odom["/base_odom"]
-    cmd_vel --> integrator
-    inverse_rpm(inverse_rpm_calculator) --> wheels_rpm["/wheels_rpm"]
-    cmd_vel --> inverse_rpm
+graph LR
+    rst["/reset"] --> in
+    bp(["/bag_play"]) --> rp["/robot/pose"]
+    rp --> in(["/integrator_node"])
+    bp --> ws["/wheel_states"]
+    ws --> vc(["/velocity_calculator"])
+    vc --> cv["/cmd_vel"]
+    vc --> acv["angluar_cmd_vel"]
+    cv --> in
+    cv --> ik(["/inverse_kin_calculator"])
+    in --> o["/odom"]
+    in --> bo["/base_odom"]
+    in --> tf{"/tf"}
+    ik --> wr["/wheels_rpm"]
+    tf --> r(["/n__rviz_robot_pos"])
 ```

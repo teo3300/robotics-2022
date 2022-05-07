@@ -33,6 +33,7 @@ public:
     inline void set(unsigned int i, unsigned int j, double value){ (*this)(i,j) = value; }
     inline double sca(Matrix mat) { return (*this)(0,0); }
     void fill(const double t[]);
+    void dump(double* t);
 
     // I have no fucking Idea what I'm doing
     double& operator()(unsigned i);
