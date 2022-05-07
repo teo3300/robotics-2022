@@ -46,6 +46,20 @@ qtcreator-*
 
 # Emacs
 .#*
-
+# Mac
+**/.DS_Store
 # Catkin custom files
 CATKIN_IGNORE
+
+# generic object files
+src/*/*.o
+src/*/*.out
+
+# ignore vscode files
+.vscode/
+
+# Default CmakeLists.txt
+src/CmakeLists.txt
+
+# used for bag debug
+tmp/

@@ -1,0 +1,26 @@
+<launch>
+
+    <arg name="bag"/>
+    <arg name="par_noise_filter" value="10"/>
+    <arg name="slid_wind_size" value="2"/>
+    <arg name="bag_speed" value="5"/>
+
+    <param name="par_wheel_radius" value="0.070"/>
+    <param name="par_robot_length" value="0.180"/>
+    <param name="par_robot_width"  value="0.169"/>
+    <param name="par_cpr"          value="40.0"/>
+    <param name="par_gear_ratio"   value="5.0"/>
+
+    <node pkg="rosbag" type="play" name="bag_play" args="--clock $(arg bag) -r $(arg bag_speed)"/>
+    
+    <node pkg="velocity" type="velocity_calculator" name="velocity_calculator" output="screen"/>
+
+    <node pkg="integrator" type="integrator_node" name="integrator_node" args="$(arg par_noise_filter)" output="screen"/>
+
+    <node pkg="inverse_rpm" type="inverse_kin" name="inverse_kin_calculator" args="$(arg slid_wind_size)"/> <!-- output="screen"/> -->
+
+    <!--<node pkg="vel_debug" type="inverse_kin_debug" name="inverse_kin_debug" output="screen"/> -->
+
+    <node pkg="rviz" type="rviz" name="rviz_robot_pos" args="-f world -d $(find project1)/launch/robot_odom.rviz"/>
+
+</launch>

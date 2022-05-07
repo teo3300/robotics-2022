@@ -1,0 +1,6 @@
+float64 new_x
+float64 new_y
+float64 new_theta
+bool    reset_odom
+---
+int64 ok
