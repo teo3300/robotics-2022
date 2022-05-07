@@ -107,11 +107,15 @@ public:
         }
         position = node_integrator.getPosition();
 
-        // generate odometry and transform message header
+        // generate position and transform message header
         position_tf.header.stamp    = position_msg.header.stamp     = msg->header.stamp;
         position_tf.header.seq      = position_msg.header.seq       = msg->header.seq;
         position_tf.header.frame_id = position_msg.header.frame_id  = "odom";
         position_tf.child_frame_id  = position_msg.child_frame_id   = "base_link";
+
+        // generate odometry and transform message header
+        odometry_tf.header.frame_id = odometry_msg.header.frame_id  = "world";
+        odometry_tf.child_frame_id  = odometry_msg.child_frame_id   = "odom";
 
         // set position
         position_tf.transform.translation.x = position_msg.pose.pose.position.x = position(0);
@@ -148,9 +152,6 @@ public:
             ct += yaw/treshold;
             tTresh--;
         } else {
-            // generate odometry and transform message header
-            odometry_tf.header.frame_id = odometry_msg.header.frame_id  = "world";
-            odometry_tf.child_frame_id  = odometry_msg.child_frame_id   = "odom";
 
             setXYT(cx, cy, ct);
             

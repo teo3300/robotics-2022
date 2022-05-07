@@ -86,6 +86,10 @@ roslaunch project1 project1.launch bag:=/full/path/to/the/rosbag
 ---
 
 ## Additional infos
+
+### World frame
+The `integrator_node` uses the first values of the `/robot/pose` topic to determine the initial position of the robot, to avoid incorrect readings this is only done before the first wheel movement message is recieved
+
 ### Nodes and topics tree
 
 ```mermaid
