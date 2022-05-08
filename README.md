@@ -5,7 +5,9 @@
 - 10660259 (Grazzani Davide)
 
 ---
-
+## Usage
+`roslaunch project1 project1.launch bag:=[absolute path to bag]` to start the project\
+More informations about starting on chapter *How to start-using nodes*
 ## Content packages and files description
 - `geometry` contains a bunch of libraries to performs most commmon mathematical operations relaed to the project:
     - `matrix` contains many matrix arithmetic operations (sum, multiplication, etc.)
@@ -22,7 +24,6 @@
         - hosts the service server to reset base odometry
     - `reset_client` client to reset odometry to a given position
 - `inverse_rpm` performs inverse kinematic computation to check verify operation correctness
-- `vel_debug` contains debug nodes used to chek correct behaviour of all other nodes
 - `project1` top-level package, only contains the project's launchfile
 
 ---
@@ -49,7 +50,7 @@
 
 - **inverse_rpm** uses the custom message `Wheels_Rpm` that contains:
     - an `header` to describe message info
-    - 4 `float64` values that represent the wheels' velocity in *radiant/seconds*
+    - 4 `float64` values that represent the wheels' velocity in *radiant/minutes*
 
 - **integrator** uses the custom message `Odom_Reset` that contains:
     - A request composed of
